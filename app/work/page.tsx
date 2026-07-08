@@ -25,6 +25,23 @@ const PROJECTS: Project[] = [
     images: ["/work/ppl-donasi/ppl-donasi-home.png", "/work/ppl-donasi/ppl-donasi-page.png"],
   },
   {
+    title: "HMMT — Rotasi Arunika",
+    year: "2026",
+    role: "Frontend Developer",
+    description:
+      "Profile website for Himpunan Mahasiswa Metalurgi (HMMT), covering the association's history, structure, events, and gallery.",
+    link: null,
+    images: ["/work/hmmt/hmmt-desktop.png", "/work/hmmt/hmmt-mobile.png"],
+  },
+  {
+    title: "Personal Portfolio",
+    year: "2025",
+    role: "Frontend Developer",
+    description: "My own portfolio site, built to showcase what I make.",
+    link: { label: "Visit live site", href: "https://portofolio-afrel.vercel.app/" },
+    images: [],
+  },
+  {
     title: "Antasena ITS — Landing Page",
     year: "2026",
     role: "UI/UX Design",
@@ -37,29 +54,12 @@ const PROJECTS: Project[] = [
     images: ["/work/antasena/antasena-hero.png", "/work/antasena/antasena-achievement.png"],
   },
   {
-    title: "Personal Portfolio",
-    year: "2025",
-    role: "Frontend Developer",
-    description: "My own portfolio site, built to showcase what I make.",
-    link: { label: "Visit live site", href: "https://portofolio-afrel.vercel.app/" },
-    images: [],
-  },
-  {
-    title: "HMMT — Rotasi Arunika",
-    year: "2026",
-    role: "Frontend Developer",
-    description:
-      "Profile website for Himpunan Mahasiswa Metalurgi (HMMT), covering the association's history, structure, events, and gallery.",
-    link: null,
-    images: ["/work/hmmt/hmmt-desktop.png", "/work/hmmt/hmmt-mobile.png"],
-  },
-  {
     title: "Schematics 2026",
     year: "2026",
     role: "Frontend Developer",
     description:
       "Competition registration platform for Schematics, the Informatics Engineering department's annual event — handles sign-ups for NLC and REEVA.",
-    link: null,
+    link: { label: "Visit live site", href: "https://schematics-its.com/" },
     images: [
       "/work/schematics/schematics-hero.png",
       "/work/schematics/schematics-menu.png",
