@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+  --grid-line: #ffffff;
+  --grid-line-soft: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="light"] {
+  --background: #f4ede0;
+  --foreground: #1a1208;
+  --grid-line: #000000;
+  --grid-line-soft: rgba(26, 18, 8, 0.08);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: #6A00FF;
+  color: #ffffff;
+}
+
+.bg-circuit {
+  background-image:
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(0deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
