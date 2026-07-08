@@ -1,12 +1,15 @@
 type RvLogoProps = {
   className?: string;
   hollow?: boolean;
+  mono?: boolean;
 };
 
-export default function RvLogo({ className, hollow }: RvLogoProps) {
+export default function RvLogo({ className, hollow, mono }: RvLogoProps) {
   const rectProps = hollow
     ? { fill: "none", stroke: "currentColor", strokeWidth: 4 }
-    : {};
+    : mono
+      ? { fill: "currentColor" }
+      : {};
 
   return (
     <svg
