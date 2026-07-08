@@ -68,9 +68,9 @@ export default function Navbar() {
         <Link
           href="/"
           aria-label="Home"
-          className="flex shrink-0 items-center rounded bg-[#6A00FF] p-1.5 transition-all duration-100 ease-out hover:opacity-80 active:scale-95"
+          className="flex shrink-0 items-center rounded p-1.5 transition-all duration-100 ease-out hover:opacity-80 active:scale-95"
         >
-          <RvLogo className="h-6 w-auto text-white" hollow />
+          <RvLogo className="h-6 w-auto text-[#6A00FF]" hollow />
         </Link>
 
         <span className="hidden text-foreground/20 sm:inline">│</span>
