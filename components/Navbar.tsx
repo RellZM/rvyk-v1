@@ -70,7 +70,7 @@ export default function Navbar() {
           aria-label="Home"
           className="flex shrink-0 items-center rounded bg-[#6A00FF] p-1.5 transition-all duration-100 ease-out hover:opacity-80 active:scale-95"
         >
-          <RvLogo className="h-6 w-auto" />
+          <RvLogo className="h-6 w-auto text-white" hollow />
         </Link>
 
         <span className="hidden text-foreground/20 sm:inline">│</span>
