@@ -2,14 +2,40 @@ type RvLogoProps = {
   className?: string;
   hollow?: boolean;
   mono?: boolean;
+  /** Render only the "R" glyph — bolder and more legible at small sizes (navbar, favicon). */
+  mark?: boolean;
 };
 
-export default function RvLogo({ className, hollow, mono }: RvLogoProps) {
+export default function RvLogo({ className, hollow, mono, mark }: RvLogoProps) {
   const rectProps = hollow
     ? { fill: "none", stroke: "currentColor", strokeWidth: 4 }
     : mono
       ? { fill: "currentColor" }
       : {};
+
+  if (mark) {
+    return (
+      <svg
+        width="244"
+        height="325"
+        viewBox="0 0 244 325"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={className}
+        role="img"
+        aria-label="RV logo mark"
+      >
+        <rect y="3.00001" width="240" height="40" fill="#1900A7" {...rectProps} />
+        <rect x="40" y="121" width="204" height="40" transform="rotate(90 40 121)" fill="#858585" {...rectProps} />
+        <rect y="62" width="40" height="40" fill="#1900A7" {...rectProps} />
+        <rect x="200" y="62" width="40" height="40" fill="#1900A7" {...rectProps} />
+        <rect x="120" y="121" width="120" height="40" fill="#1900A7" {...rectProps} />
+        <rect x="120" y="175" width="40" height="40" fill="#1900A7" {...rectProps} />
+        <rect x="160" y="230" width="40" height="40" fill="#1900A7" {...rectProps} />
+        <rect x="200" y="285" width="40" height="40" fill="#1900A7" {...rectProps} />
+      </svg>
+    );
+  }
 
   return (
     <svg
