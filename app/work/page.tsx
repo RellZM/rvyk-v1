@@ -13,11 +13,11 @@ type Project = {
 
 const PROJECTS: Project[] = [
   {
-    title: "Donasi Anak Yatim — UI/UX",
+    title: "Donasi Anak Yatim - UI/UX",
     year: "2025",
     role: "UI/UX Design",
     description:
-      "Final project for my Software Engineering (PPL) course — a simple UI/UX design for a donation app connecting donors with orphanages.",
+      "Final project for my Software Engineering (PPL) course - a simple UI/UX design for a donation app connecting donors with orphanages.",
     link: {
       label: "View on Figma",
       href: "https://www.figma.com/design/Q2gcB2tYZGt1cGYp8v8Uxl/Donasi-Anak-Yatim?node-id=0-1&t=5CMJP9vB4UHg1XPF-1",
@@ -25,13 +25,17 @@ const PROJECTS: Project[] = [
     images: ["/work/ppl-donasi/ppl-donasi-home.png", "/work/ppl-donasi/ppl-donasi-page.png"],
   },
   {
-    title: "HMMT — Rotasi Arunika",
+    title: "Schematics 2026",
     year: "2026",
     role: "Frontend Developer",
     description:
-      "Profile website for Himpunan Mahasiswa Metalurgi (HMMT), covering the association's history, structure, events, and gallery.",
-    link: null,
-    images: ["/work/hmmt/hmmt-desktop.png", "/work/hmmt/hmmt-mobile.png"],
+      "Competition registration platform for Schematics, the Informatics Engineering department's annual event - handles sign-ups for NLC and REEVA.",
+    link: { label: "Visit live site", href: "https://schematics-its.com/" },
+    images: [
+      "/work/schematics/schematics-hero.png",
+      "/work/schematics/schematics-menu.png",
+      "/work/schematics/schematics-form.png",
+    ],
   },
   {
     title: "Personal Portfolio",
@@ -42,11 +46,11 @@ const PROJECTS: Project[] = [
     images: [],
   },
   {
-    title: "Antasena ITS — Landing Page",
+    title: "Antasena ITS - Landing Page",
     year: "2026",
     role: "UI/UX Design",
     description:
-      "A landing page concept I designed for the Antasena ITS Team recruitment task — Indonesia's first team turning clean energy into speed. (Didn't get in, but the design stays.)",
+      "A landing page concept I designed for the Antasena ITS Team recruitment task - Indonesia's first team turning clean energy into speed. (Didn't get in, but the design stays.)",
     link: {
       label: "View on Figma",
       href: "https://www.figma.com/design/mzUUUkD1PSQqv50609041Y/Antasena-Task?node-id=0-1&t=7VoYgcWC9OLVyftI-1",
@@ -54,19 +58,17 @@ const PROJECTS: Project[] = [
     images: ["/work/antasena/antasena-hero.png", "/work/antasena/antasena-achievement.png"],
   },
   {
-    title: "Schematics 2026",
+    title: "HMMT - Rotasi Arunika",
     year: "2026",
     role: "Frontend Developer",
     description:
-      "Competition registration platform for Schematics, the Informatics Engineering department's annual event — handles sign-ups for NLC and REEVA.",
-    link: { label: "Visit live site", href: "https://schematics-its.com/" },
-    images: [
-      "/work/schematics/schematics-hero.png",
-      "/work/schematics/schematics-menu.png",
-      "/work/schematics/schematics-form.png",
-    ],
+      "Profile website for Himpunan Mahasiswa Metalurgi (HMMT), covering the association's history, structure, events, and gallery.",
+    link: null,
+    images: ["/work/hmmt/hmmt-desktop.png", "/work/hmmt/hmmt-mobile.png"],
   },
 ];
+
+const SORTED_PROJECTS = [...PROJECTS].sort((a, b) => Number(b.year) - Number(a.year));
 
 export default function WorkPage() {
   const [hovered, setHovered] = useState<number | null>(null);
@@ -79,7 +81,7 @@ export default function WorkPage() {
         </h1>
 
         <div className="mt-8">
-          {PROJECTS.map((p, i) => (
+          {SORTED_PROJECTS.map((p, i) => (
             <div
               key={p.title}
               onMouseEnter={() => setHovered(i)}
@@ -95,7 +97,7 @@ export default function WorkPage() {
                   {p.title}
                 </h2>
                 <span className="font-mono text-xs text-foreground/40">
-                  {p.year} — {p.role}
+                  {p.year} - {p.role}
                 </span>
               </div>
 

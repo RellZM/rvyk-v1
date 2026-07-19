@@ -78,7 +78,7 @@ export default function Navbar() {
         {/* nav */}
         <ul
           ref={listRef}
-          className="relative flex items-center gap-1 overflow-x-auto sm:gap-2"
+          className="relative flex items-center gap-1 sm:gap-2"
           onMouseLeave={handleLeaveList}
         >
           <div
