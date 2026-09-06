@@ -32,7 +32,7 @@ export default function AboutPage() {
 
             <div className="mt-8 max-w-xl space-y-5 text-justify text-[15px] leading-8 text-foreground/85">
               <p>
-                Yo, I&apos;m Rel or Rvyk, just your average student obsessed with two things: building
+                Yo, I&apos;m Rel or Rvyk from SMAN 1 Sidoarjo now learning Software enginering at ITS, just your average student obsessed with two things: building
                 stuff for the web and hacking away at CTF challenges. During the day, I might be
                 tinkering with frontend, figuring out how to make the UI smooth and enjoyable to
                 use, but once night hits ... I could be deep in a forensics challenge or
@@ -53,7 +53,7 @@ export default function AboutPage() {
           <div className="flex shrink-0 flex-col items-center gap-3">
             <div
               className="h-32 w-32 shrink-0 rounded-full bg-foreground/10 bg-cover bg-center ring-1 ring-foreground/15 sm:h-36 sm:w-36"
-              style={{ backgroundImage: "url(/about/photo.png)" }}
+              style={{ backgroundImage: "url(/about/selfie.jpg)" }}
               role="img"
               aria-label="Photo"
             />
@@ -77,7 +77,7 @@ export default function AboutPage() {
               <div className="font-mono text-xs uppercase tracking-widest text-foreground/40">
                 Based
               </div>
-              <div className="mt-1 text-lg text-foreground">Reykjavik · UTC+0</div>
+              <div className="mt-1 text-lg text-foreground">Sidoarjo · UTC+7</div>
             </div>
             <div className="text-right">
               <div className="font-mono text-xs uppercase tracking-widest text-foreground/40">
