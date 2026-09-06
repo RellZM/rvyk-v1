@@ -32,7 +32,7 @@ export default function AboutPage() {
 
             <div className="mt-8 max-w-xl space-y-5 text-justify text-[15px] leading-8 text-foreground/85">
               <p>
-                Yo, I&apos;m Rvyk, just your average student obsessed with two things: building
+                Yo, I&apos;m Rel or Rvyk, just your average student obsessed with two things: building
                 stuff for the web and hacking away at CTF challenges. During the day, I might be
                 tinkering with frontend, figuring out how to make the UI smooth and enjoyable to
                 use, but once night hits ... I could be deep in a forensics challenge or
