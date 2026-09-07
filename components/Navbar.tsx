@@ -13,13 +13,13 @@ export const NAV_ITEMS = [
   { label: "about", href: "/about" },
 ];
 
-function formatReykjavik(date: Date) {
-  return new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Atlantic/Reykjavik",
+function formatSidoarjo(date: Date) {
+  return date.toLocaleTimeString("en-US", {
+    timeZone: "Asia/Jakarta",
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
-  }).format(date);
+  });
 }
 
 type Highlight = { left: number; top: number; width: number; height: number; visible: boolean };
@@ -55,7 +55,7 @@ export default function Navbar() {
   }
 
   useEffect(() => {
-    const update = () => setTime(formatReykjavik(new Date()));
+    const update = () => setTime(formatSidoarjo(new Date()));
     update();
     const id = setInterval(update, 1000 * 30);
     return () => clearInterval(id);
@@ -117,7 +117,7 @@ export default function Navbar() {
         {/* clock + theme toggle */}
         <div className="ml-auto hidden shrink-0 items-center gap-2 rounded-full bg-foreground/5 px-3 py-1.5 text-xs text-foreground/80 ring-1 ring-foreground/10 transition-colors duration-100 ease-out hover:bg-foreground/10 sm:flex">
           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" aria-hidden />
-          <span className="tabular-nums">REY {time ?? "--:--"}</span>
+          <span className="tabular-nums">SDJ {time ?? "--:--"}</span>
           <ThemeToggle />
         </div>
       </nav>
