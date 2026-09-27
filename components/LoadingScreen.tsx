@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { usePathname } from "next/navigation";
 
 // Logo blocks in the 580x325 viewBox space (axis-aligned bounding boxes,
 // derived from the Figma SVG's rotated/flipped rects).
@@ -93,21 +94,48 @@ const BUILD_DONE_MS = Math.max(...BLOCKS.map((b, i) => delayFor(b, i))) + TRANSL
 const VISIBLE_MS = BUILD_DONE_MS + HOLD_AFTER_BUILD_MS;
 
 export default function LoadingScreen() {
+  const pathname = usePathname();
+  const isAdmin = pathname?.startsWith("/admin");
+
   const [built, setBuilt] = useState(false);
   const [phase, setPhase] = useState<"loading" | "exiting" | "done">("loading");
 
   useEffect(() => {
-    const raf = requestAnimationFrame(() => requestAnimationFrame(() => setBuilt(true)));
-    const exitTimer = setTimeout(() => setPhase("exiting"), VISIBLE_MS);
-    const doneTimer = setTimeout(() => setPhase("done"), VISIBLE_MS + EXIT_MS);
+    // If admin or already played, dismiss immediately
+    try {
+      if (isAdmin || sessionStorage.getItem("rvyk_intro_played")) {
+        setPhase("done");
+        return;
+      }
+      sessionStorage.setItem("rvyk_intro_played", "true");
+    } catch {
+      if (isAdmin) {
+        setPhase("done");
+        return;
+      }
+    }
+
+    // Start block animation instantly
+    const animTimer = setTimeout(() => {
+      setBuilt(true);
+    }, 20);
+
+    const exitTimer = setTimeout(() => {
+      setPhase("exiting");
+    }, VISIBLE_MS);
+
+    const doneTimer = setTimeout(() => {
+      setPhase("done");
+    }, VISIBLE_MS + EXIT_MS);
+
     return () => {
-      cancelAnimationFrame(raf);
+      clearTimeout(animTimer);
       clearTimeout(exitTimer);
       clearTimeout(doneTimer);
     };
-  }, []);
+  }, [isAdmin]);
 
-  if (phase === "done") return null;
+  if (isAdmin || phase === "done") return null;
 
   const exiting = phase === "exiting";
 

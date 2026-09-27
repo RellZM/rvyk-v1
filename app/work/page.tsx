@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/utils/supabase/client";
+import { Post } from "@/types/post";
 
 type Project = {
+  id?: string;
   title: string;
   year: string;
   role: string;
@@ -11,7 +14,7 @@ type Project = {
   images: string[];
 };
 
-const PROJECTS: Project[] = [
+const DEFAULT_PROJECTS: Project[] = [
   {
     title: "Donasi Anak Yatim - UI/UX",
     year: "2025",
@@ -68,10 +71,58 @@ const PROJECTS: Project[] = [
   },
 ];
 
-const SORTED_PROJECTS = [...PROJECTS].sort((a, b) => Number(b.year) - Number(a.year));
-
 export default function WorkPage() {
   const [hovered, setHovered] = useState<number | null>(null);
+  const [projects, setProjects] = useState<Project[]>(DEFAULT_PROJECTS);
+
+  useEffect(() => {
+    async function fetchWorkProjects() {
+      try {
+        const { data, error } = await supabase
+          .from("posts")
+          .select("*")
+          .eq("status", "published")
+          .eq("target", "work")
+          .order("created_at", { ascending: false });
+
+        if (!error && data && data.length > 0) {
+          const dbProjects: Project[] = (data as Post[]).map((p) => {
+            const projectImages: string[] =
+              p.images && p.images.length > 0
+                ? p.images
+                : p.cover_image
+                ? [p.cover_image]
+                : [];
+
+            return {
+              id: p.id,
+              title: p.title,
+              year: p.year || new Date(p.created_at).getFullYear().toString(),
+              role: p.role || p.category || "Project",
+              description: p.short_description || p.content || "",
+              link: p.link_url
+                ? {
+                    label: p.link_label || "Visit live site",
+                    href: p.link_url,
+                  }
+                : null,
+              images: projectImages,
+            };
+          });
+
+          // Combine with default projects and sort by year descending
+          const combined = [...dbProjects, ...DEFAULT_PROJECTS].sort(
+            (a, b) => Number(b.year) - Number(a.year)
+          );
+          setProjects(combined);
+        }
+      } catch (err) {
+        console.error("Error fetching work projects:", err);
+      }
+    }
+
+    fetchWorkProjects();
+  }, []);
 
   return (
     <section className="flex-1 overflow-y-auto bg-background px-6 py-16 sm:px-10">
@@ -81,7 +132,7 @@ export default function WorkPage() {
         </h1>
 
         <div className="mt-8">
-          {SORTED_PROJECTS.map((p, i) => (
+          {projects.map((p, i) => (
             <div
               key={p.title}
               onMouseEnter={() => setHovered(i)}

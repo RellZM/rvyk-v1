@@ -66,8 +66,8 @@ export default function Navbar() {
       <nav className="flex h-12 w-full items-center gap-3 px-4 font-mono text-sm sm:px-6">
         {/* brand pill */}
         <Link
-          href="/"
-          aria-label="Home"
+          href="/admin"
+          aria-label="Admin Dashboard"
           className="flex shrink-0 items-center rounded p-1.5 transition-all duration-100 ease-out hover:opacity-80 active:scale-95"
         >
           <RvLogo className="h-6 w-auto text-[#6A00FF]" mono mark />

@@ -9,6 +9,10 @@ const EYES_CLOSED_SRC = "/mascot/eyes-closed.svg";
 const EYES_HOVER_SRC = "/mascot/eyes-hover.svg";
 const EYES_ACTIVE_SRC = "/mascot/eyes-active.svg";
 
+// Mascot baru (GIF) untuk PC / Desktop
+const GIF_INACTIVE_SRC = "/mascot_new/Inactive(1).gif";
+const GIF_ACTIVE_SRC = "/mascot_new/Speaking(1).gif";
+
 const BLINK_CLOSED_MS = 140;
 const BLINK_MIN_OPEN_MS = 2200;
 const BLINK_MAX_OPEN_MS = 4800;
@@ -115,28 +119,54 @@ export default function Mascot() {
       onPointerLeave={() => setHovering(false)}
       role="img"
       aria-label="Maskot"
-      className="relative h-[clamp(11rem,20vw,22rem)] w-[clamp(11rem,20vw,22rem)] cursor-grab touch-none select-none active:cursor-grabbing"
+      className="relative h-[clamp(11rem,20vw,22rem)] w-[clamp(11rem,20vw,22rem)] lg:h-[min(72vh,38vw,560px)] lg:w-[min(72vh,38vw,560px)] cursor-grab touch-none select-none active:cursor-grabbing"
       style={{
         transform: `translate(${pos.x}px, ${pos.y}px)`,
         transition: dragging ? "none" : "transform 0.2s ease-out",
       }}
     >
       <div
-        className={`absolute bottom-full left-1/2 mb-3 w-max max-w-56 -translate-x-1/2 rounded-2xl bg-white px-3.5 py-2 text-center text-sm font-medium text-black transition-all duration-150 ease-out ${
+        className={`absolute bottom-full left-1/2 mb-3 w-max max-w-64 -translate-x-1/2 rounded-2xl bg-white px-4 py-2 text-center text-sm font-medium text-black shadow-lg transition-all duration-150 ease-out ${
           hovering ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-1 opacity-0"
         }`}
       >
         {chatMessage}
-        <span className="absolute left-1/2 top-full h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-white" aria-hidden />
+        <span
+          className="absolute left-1/2 top-full h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-white"
+          aria-hidden
+        />
       </div>
 
-      <img src={HEAD_SRC} alt="" draggable={false} className="absolute inset-0 h-full w-full" />
-      <img
-        src={EYES_SRC[expression]}
-        alt=""
-        draggable={false}
-        className="absolute inset-0 h-full w-full"
-      />
+      {/* PC / Desktop: Mascot GIF Baru */}
+      <div className="relative hidden h-full w-full lg:block">
+        <img
+          src={GIF_INACTIVE_SRC}
+          alt="Maskot Inactive"
+          draggable={false}
+          className={`absolute inset-0 h-full w-full object-contain object-bottom ${
+            hovering ? "opacity-0" : "opacity-100"
+          }`}
+        />
+        <img
+          src={GIF_ACTIVE_SRC}
+          alt="Maskot Active"
+          draggable={false}
+          className={`absolute inset-0 h-full w-full object-contain object-bottom ${
+            hovering ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      </div>
+
+      {/* Mobile: Mascot Lama (SVG Base + Eyes) */}
+      <div className="relative block h-full w-full lg:hidden">
+        <img src={HEAD_SRC} alt="" draggable={false} className="absolute inset-0 h-full w-full" />
+        <img
+          src={EYES_SRC[expression]}
+          alt=""
+          draggable={false}
+          className="absolute inset-0 h-full w-full"
+        />
+      </div>
     </div>
   );
 }
