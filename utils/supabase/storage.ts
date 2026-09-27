@@ -1,4 +1,4 @@
-import { supabase } from './client';
+import { getSupabaseClient } from './client';
 
 /**
  * Uploads an image file to the 'post-images' Supabase Storage bucket.
@@ -6,6 +6,7 @@ import { supabase } from './client';
  */
 export async function uploadPostImage(file: File): Promise<{ url: string | null; error: string | null }> {
   try {
+    const supabase = getSupabaseClient();
     // Generate a unique safe filename
     const fileExt = file.name.split('.').pop() || 'png';
     const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9]/g, "-").toLowerCase();

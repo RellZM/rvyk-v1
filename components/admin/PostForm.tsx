@@ -4,7 +4,7 @@ import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { PostCategory, POST_CATEGORIES, Post } from "@/types/post";
-import { supabase } from "@/utils/supabase/client";
+import { getSupabaseClient } from "@/utils/supabase/client";
 import { uploadPostImage } from "@/utils/supabase/storage";
 import PostContentRenderer from "@/components/writing/PostContentRenderer";
 import { getCategoryBadgeStyle } from "@/components/writing/PostCard";
@@ -182,6 +182,7 @@ export default function PostForm({ initialData, isEdit = false }: PostFormProps)
 
     setSaving(true);
     try {
+      const supabase = getSupabaseClient();
       const safeSlug =
         slug.trim() ||
         title

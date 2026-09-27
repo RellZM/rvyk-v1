@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, use } from "react";
-import { supabase } from "@/utils/supabase/client";
+import { getSupabaseClient } from "@/utils/supabase/client";
 import { Post } from "@/types/post";
 import PostForm from "@/components/admin/PostForm";
 import Link from "next/link";
@@ -22,7 +22,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
     async function fetchPost() {
       setLoading(true);
       try {
-        const { data, error } = await supabase
+      const { data, error } = await getSupabaseClient()
           .from("posts")
           .select("*")
           .eq("id", postId)

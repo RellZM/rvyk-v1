@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/utils/supabase/client";
+import { getSupabaseClient } from "@/utils/supabase/client";
 import { Post } from "@/types/post";
 
 type Project = {
@@ -78,7 +78,7 @@ export default function WorkPage() {
   useEffect(() => {
     async function fetchWorkProjects() {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await getSupabaseClient()
           .from("posts")
           .select("*")
           .eq("status", "published")

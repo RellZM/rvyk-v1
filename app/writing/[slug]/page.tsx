@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, use } from "react";
 import Link from "next/link";
-import { supabase } from "@/utils/supabase/client";
+import { getSupabaseClient } from "@/utils/supabase/client";
 import { Post } from "@/types/post";
 import PostContentRenderer from "@/components/writing/PostContentRenderer";
 import { getCategoryBadgeStyle } from "@/components/writing/PostCard";
@@ -23,7 +23,7 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
     async function fetchPost() {
       setLoading(true);
       try {
-        const { data, error } = await supabase
+        const { data, error } = await getSupabaseClient()
           .from("posts")
           .select("*")
           .eq("slug", slug)

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { supabase } from "@/utils/supabase/client";
+import { getSupabaseClient } from "@/utils/supabase/client";
 import { Post } from "@/types/post";
 import { getCategoryBadgeStyle } from "@/components/writing/PostCard";
 
@@ -19,7 +19,7 @@ export default function AdminPostsPage() {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const { data, error } = await supabase
+      const { data, error } = await getSupabaseClient()
         .from("posts")
         .select("*")
         .order("created_at", { ascending: false });
@@ -47,7 +47,7 @@ export default function AdminPostsPage() {
 
     setDeletingId(id);
     try {
-      const { error } = await supabase.from("posts").delete().eq("id", id);
+      const { error } = await getSupabaseClient().from("posts").delete().eq("id", id);
       if (error) throw error;
       setPosts((prev) => prev.filter((p) => p.id !== id));
     } catch (err: unknown) {
@@ -60,7 +60,7 @@ export default function AdminPostsPage() {
   const handleToggleStatus = async (post: Post) => {
     const nextStatus = post.status === "published" ? "draft" : "published";
     try {
-      const { error } = await supabase
+      const { error } = await getSupabaseClient()
         .from("posts")
         .update({ status: nextStatus, updated_at: new Date().toISOString() })
         .eq("id", post.id);

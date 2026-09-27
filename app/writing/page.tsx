@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase } from "@/utils/supabase/client";
+import { getSupabaseClient } from "@/utils/supabase/client";
 import { Post } from "@/types/post";
 import PolarBear from "@/components/PolarBear";
 
@@ -13,7 +13,7 @@ export default function WritingPage() {
   useEffect(() => {
     async function fetchPublishedPosts() {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await getSupabaseClient()
           .from("posts")
           .select("*")
           .eq("status", "published")
@@ -116,4 +116,3 @@ export default function WritingPage() {
     </section>
   );
 }
-
