@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import RvLogo from "@/components/RvLogo";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -25,6 +25,7 @@ function formatReykjavik(date: Date) {
 type Highlight = { left: number; top: number; width: number; height: number; visible: boolean };
 
 export default function Navbar() {
+  const router = useRouter();
   const pathname = usePathname();
   const [time, setTime] = useState<string | null>(null);
   const listRef = useRef<HTMLUListElement>(null);
@@ -62,11 +63,12 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-foreground/10 bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full shrink-0 border-b border-foreground/10 bg-background/80 backdrop-blur-md">
       <nav className="flex h-12 w-full items-center gap-3 px-4 font-mono text-sm sm:px-6">
         {/* brand pill */}
         <Link
           href="/admin"
+          onDoubleClick={() => router.push("/")}
           aria-label="Admin Dashboard"
           className="flex shrink-0 items-center rounded p-1.5 transition-all duration-100 ease-out hover:opacity-80 active:scale-95"
         >
@@ -115,9 +117,11 @@ export default function Navbar() {
         </ul>
 
         {/* clock + theme toggle */}
-        <div className="ml-auto hidden shrink-0 items-center gap-2 rounded-full bg-foreground/5 px-3 py-1.5 text-xs text-foreground/80 ring-1 ring-foreground/10 transition-colors duration-100 ease-out hover:bg-foreground/10 sm:flex">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" aria-hidden />
-          <span className="tabular-nums">REY {time ?? "--:--"}</span>
+        <div className="ml-auto flex shrink-0 items-center gap-2 rounded-full bg-foreground/5 px-2 py-1 text-xs text-foreground/80 ring-1 ring-foreground/10 transition-colors duration-100 ease-out hover:bg-foreground/10 sm:px-3 sm:py-1.5">
+          <span className="hidden items-center gap-2 sm:inline-flex">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" aria-hidden />
+            <span className="tabular-nums">REY {time ?? "--:--"}</span>
+          </span>
           <ThemeToggle />
         </div>
       </nav>

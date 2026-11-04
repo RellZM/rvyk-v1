@@ -72,6 +72,7 @@ export default function Mascot() {
   }, []);
 
   function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
+    if (window.innerWidth >= 1024) return;
     e.currentTarget.setPointerCapture(e.pointerId);
     dragOrigin.current = { pointer: { x: e.clientX, y: e.clientY }, pos };
     setDragging(true);
@@ -119,7 +120,7 @@ export default function Mascot() {
       onPointerLeave={() => setHovering(false)}
       role="img"
       aria-label="Maskot"
-      className="relative h-[clamp(11rem,20vw,22rem)] w-[clamp(11rem,20vw,22rem)] lg:h-[min(72vh,38vw,560px)] lg:w-[min(72vh,38vw,560px)] cursor-grab touch-none select-none active:cursor-grabbing"
+      className="relative h-[clamp(10rem,26vh,16rem)] w-[clamp(10rem,26vh,16rem)] sm:h-[clamp(13rem,30vh,18rem)] sm:w-[clamp(13rem,30vh,18rem)] lg:h-[min(72vh,38vw,560px)] lg:w-[min(72vh,38vw,560px)] cursor-grab touch-none select-none active:cursor-grabbing lg:cursor-default lg:touch-auto"
       style={{
         transform: `translate(${pos.x}px, ${pos.y}px)`,
         transition: dragging ? "none" : "transform 0.2s ease-out",

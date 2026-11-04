@@ -39,3 +39,37 @@ body {
   background-size: 48px 48px;
 }
 
+/* View Transitions circular radiating effect - GPU accelerated */
+[data-switching] *,
+[data-switching] *::before,
+[data-switching] *::after {
+  transition: none !important;
+}
+
+@keyframes vt-reveal {
+  from {
+    clip-path: circle(0px at var(--vt-x, 50%) var(--vt-y, 50%));
+  }
+  to {
+    clip-path: circle(var(--vt-r, 100vmax) at var(--vt-x, 50%) var(--vt-y, 50%));
+  }
+}
+
+::view-transition-group(root) {
+  animation: none;
+}
+
+::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  animation: vt-reveal 380ms cubic-bezier(0.25, 1, 0.5, 1) both;
+  mix-blend-mode: normal;
+  z-index: 9999;
+}
+
+
+

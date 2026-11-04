@@ -24,11 +24,45 @@ export default function ThemeToggle() {
     }
   }, []);
 
-  function toggle() {
-    const next: Theme = theme === "dark" ? "light" : "dark";
+  function toggle(e: React.MouseEvent<HTMLButtonElement>) {
+    const root = document.documentElement;
+    const current: Theme = root.getAttribute("data-theme") === "light" ? "light" : "dark";
+    const next: Theme = current === "dark" ? "light" : "dark";
+
+    const doc = document as unknown as {
+      startViewTransition?: (callback: () => void) => void;
+    };
+
+    if (
+      !doc.startViewTransition ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      applyTheme(next);
+      setTheme(next);
+      localStorage.setItem(THEME_KEY, next);
+      return;
+    }
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    root.style.setProperty("--vt-x", `${x}px`);
+    root.style.setProperty("--vt-y", `${y}px`);
+    root.style.setProperty("--vt-r", `${endRadius}px`);
+    root.setAttribute("data-switching", "");
+
+    doc.startViewTransition(() => {
+      applyTheme(next);
+    });
+
     setTheme(next);
-    applyTheme(next);
     localStorage.setItem(THEME_KEY, next);
+    requestAnimationFrame(() => root.removeAttribute("data-switching"));
   }
 
   return (
@@ -38,15 +72,16 @@ export default function ThemeToggle() {
       aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
       className="flex h-5 w-5 shrink-0 items-center justify-center text-foreground/70 transition-all duration-100 ease-out hover:text-foreground active:scale-90"
     >
-      {theme === "dark" ? (
-        <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" />
-        </svg>
-      ) : (
-        <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
-          <path d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.66-6.66 1.41-1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M4.93 4.93 6.34 6.34M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" />
-        </svg>
-      )}
+      <svg
+        viewBox="0 0 32 32"
+        fill="currentColor"
+        aria-hidden="true"
+        className={`h-4 w-4 transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+          theme === "light" ? "rotate-180" : "rotate-0"
+        }`}
+      >
+        <path d="M16 .5C7.4.5.5 7.4.5 16S7.4 31.5 16 31.5 31.5 24.6 31.5 16 24.6.5 16 .5zm0 28.1V3.4C23 3.4 28.6 9 28.6 16s-5.6 12.6-12.6 12.6z" />
+      </svg>
     </button>
   );
 }

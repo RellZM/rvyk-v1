@@ -1,3 +1,19 @@
+import React from "react";
+import {
+  siTypescript,
+  siJavascript,
+  siPython,
+  siKotlin,
+  siCplusplus,
+  siReact,
+  siNextdotjs,
+  siTailwindcss,
+  siSupabase,
+  siGithub,
+  siFigma,
+  type SimpleIcon as SimpleIconType,
+} from "simple-icons";
+
 const CONTACTS = [
   {
     label: "Email",
@@ -11,9 +27,88 @@ const CONTACTS = [
   },
 ];
 
+interface TechItem {
+  name: string;
+  desc: string;
+  icon: SimpleIconType;
+}
+
+const LANGUAGES: TechItem[] = [
+  {
+    name: "TypeScript",
+    desc: "rvyk, web apps",
+    icon: siTypescript,
+  },
+  {
+    name: "JavaScript",
+    desc: "Frontend, scripting",
+    icon: siJavascript,
+  },
+  {
+    name: "Python",
+    desc: "KKA, CTF & scripts",
+    icon: siPython,
+  },
+  {
+    name: "Kotlin",
+    desc: "PPB, Android apps",
+    icon: siKotlin,
+  },
+  {
+    name: "C / C++",
+    desc: "BinaryShield, systems",
+    icon: siCplusplus,
+  },
+];
+
+const FRAMEWORKS: TechItem[] = [
+  {
+    name: "React",
+    desc: "Component UI",
+    icon: siReact,
+  },
+  {
+    name: "Next.js",
+    desc: "App Router & SSR",
+    icon: siNextdotjs,
+  },
+  {
+    name: "Tailwind CSS",
+    desc: "Utility styling",
+    icon: siTailwindcss,
+  },
+  {
+    name: "Supabase",
+    desc: "Database & Backend",
+    icon: siSupabase,
+  },
+  {
+    name: "GitHub / Git",
+    desc: "Version control",
+    icon: siGithub,
+  },
+  {
+    name: "Figma",
+    desc: "UI/UX & prototypes",
+    icon: siFigma,
+  },
+];
+
+function IconSvg({ icon }: { icon: SimpleIconType }) {
+  return (
+    <svg
+      role="img"
+      viewBox="0 0 24 24"
+      className="h-4 w-4 fill-current transition-transform duration-150 group-hover:scale-110"
+      aria-label={icon.title}>
+      <path d={icon.path} />
+    </svg>
+  );
+}
+
 export default function AboutPage() {
   return (
-    <section className="flex-1 overflow-y-auto bg-background px-6 py-16 sm:px-10">
+    <section className="flex-1 overflow-y-auto bg-background px-6 py-6 sm:py-16 sm:px-10">
       <div className="mx-auto max-w-3xl">
         <div className="flex flex-col-reverse gap-10 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
           <div className="min-w-0">
@@ -32,20 +127,23 @@ export default function AboutPage() {
 
             <div className="mt-8 max-w-xl space-y-5 text-justify text-[15px] leading-8 text-foreground/85">
               <p>
-                Yo, I&apos;m Rel or Rvyk, just your average student obsessed with two things: building
-                stuff for the web and hacking away at CTF challenges. During the day, I might be
-                tinkering with frontend, figuring out how to make the UI smooth and enjoyable to
-                use, but once night hits ... I could be deep in a forensics challenge or
-                reverse-engineering a binary, losing track of time completely.
+                Yo, I&apos;m Rel or Rvyk, just your average student obsessed
+                with two things: building stuff for the web and hacking away at
+                CTF challenges. During the day, I might be tinkering with
+                frontend, figuring out how to make the UI smooth and enjoyable
+                to use, but once night hits ... I could be deep in a forensics
+                challenge or reverse-engineering a binary, losing track of time
+                completely.
               </p>
               <p>
-                I&apos;m all about the details, whether it&apos;s getting a pixel just right on
-                the web, or spotting the tiny flaw everyone else missed in a CTF. Both feel like
-                solving a puzzle, just different flavors.
+                I&apos;m all about the details, whether it&apos;s getting a
+                pixel just right on the web, or spotting the tiny flaw everyone
+                else missed in a CTF. Both feel like solving a puzzle, just
+                different flavors.
               </p>
               <p>
-                Currently leveling up my skills in both worlds, always hunting for new challenges
-                to break (and fix) things.
+                Currently leveling up my skills in both worlds, always hunting
+                for new challenges to break (and fix) things.
               </p>
             </div>
           </div>
@@ -57,7 +155,9 @@ export default function AboutPage() {
               role="img"
               aria-label="Photo"
             />
-            <span className="font-mono text-xs text-foreground/40">rvyk · 01</span>
+            <span className="font-mono text-xs text-foreground/40">
+              rvyk · 01
+            </span>
           </div>
         </div>
 
@@ -77,7 +177,9 @@ export default function AboutPage() {
               <div className="font-mono text-xs uppercase tracking-widest text-foreground/40">
                 Based
               </div>
-              <div className="mt-1 text-lg text-foreground">Reykjavik · UTC+0</div>
+              <div className="mt-1 text-lg text-foreground">
+                Reykjavik · UTC+0
+              </div>
             </div>
             <div className="text-right">
               <div className="font-mono text-xs uppercase tracking-widest text-foreground/40">
@@ -88,8 +190,72 @@ export default function AboutPage() {
           </div>
         </div>
 
+        {/* Tech Stack */}
+        <div className="mt-16 max-w-2xl">
+          <div className="flex items-baseline justify-between border-b border-foreground/15 pb-2">
+            <span className="font-mono text-xs font-bold uppercase tracking-widest text-foreground">
+              Tech Stack
+            </span>
+            <span className="font-mono text-xs uppercase tracking-widest text-foreground/40">
+              Languages & Tools
+            </span>
+          </div>
+
+          <div className="pt-6 space-y-6">
+            <div>
+              <div className="mb-3 font-mono text-[11px] uppercase tracking-wider text-foreground/40">
+                Languages
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                {LANGUAGES.map((tech) => (
+                  <div
+                    key={tech.name}
+                    className="group flex items-center gap-3 rounded-lg border border-foreground/10 bg-foreground/[0.02] p-2.5 transition-all duration-150 hover:border-foreground/25 hover:bg-foreground/[0.05]">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-foreground/5 text-foreground/75 transition-colors group-hover:text-foreground">
+                      <IconSvg icon={tech.icon} />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="truncate text-[13px] font-medium text-foreground">
+                        {tech.name}
+                      </div>
+                      <div className="font-mono text-[10px] text-foreground/40">
+                        {tech.desc}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <div className="mb-3 font-mono text-[11px] uppercase tracking-wider text-foreground/40">
+                Frameworks & Ecosystem
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                {FRAMEWORKS.map((tech) => (
+                  <div
+                    key={tech.name}
+                    className="group flex items-center gap-3 rounded-lg border border-foreground/10 bg-foreground/[0.02] p-2.5 transition-all duration-150 hover:border-foreground/25 hover:bg-foreground/[0.05]">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-foreground/5 text-foreground/75 transition-colors group-hover:text-foreground">
+                      <IconSvg icon={tech.icon} />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="truncate text-[13px] font-medium text-foreground">
+                        {tech.name}
+                      </div>
+                      <div className="font-mono text-[10px] text-foreground/40">
+                        {tech.desc}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Contact */}
-        <div className="mt-12 max-w-2xl pb-4">
+        <div className="mt-16 max-w-2xl pb-8">
           <div className="flex items-baseline justify-between border-b border-foreground/15 pb-2">
             <span className="font-mono text-xs font-bold uppercase tracking-widest text-foreground">
               Contact
@@ -106,8 +272,7 @@ export default function AboutPage() {
                 href={c.href}
                 target="_blank"
                 rel="noreferrer"
-                className="group flex items-center justify-between gap-4 border-b border-foreground/10 py-4 transition-colors duration-150 ease-out hover:bg-foreground/3"
-              >
+                className="group flex items-center justify-between gap-4 border-b border-foreground/10 py-4 transition-colors duration-150 ease-out hover:bg-foreground/3">
                 <div className="font-mono text-xs uppercase tracking-widest text-foreground/40 sm:w-32">
                   {c.label}
                 </div>

@@ -3,77 +3,75 @@
 import { useState, useEffect } from "react";
 import { getSupabaseClient } from "@/utils/supabase/client";
 import { Post } from "@/types/post";
+import FlexCarousel, { FlexCarouselItem } from "@/components/work/FlexCarousel";
 
-type Project = {
-  id?: string;
-  title: string;
-  year: string;
-  role: string;
-  description: string;
-  link: { label: string; href: string } | null;
-  images: string[];
-};
+type BendPreset = "liquid" | "ribbon" | "vortex" | "arch";
 
-const DEFAULT_PROJECTS: Project[] = [
+const DEFAULT_WORK_ITEMS: FlexCarouselItem[] = [
   {
-    title: "Donasi Anak Yatim - UI/UX",
-    year: "2025",
-    role: "UI/UX Design",
-    description:
-      "Final project for my Software Engineering (PPL) course - a simple UI/UX design for a donation app connecting donors with orphanages.",
-    link: {
-      label: "View on Figma",
-      href: "https://www.figma.com/design/Q2gcB2tYZGt1cGYp8v8Uxl/Donasi-Anak-Yatim?node-id=0-1&t=5CMJP9vB4UHg1XPF-1",
-    },
-    images: ["/work/ppl-donasi/ppl-donasi-home.png", "/work/ppl-donasi/ppl-donasi-page.png"],
+    src: "/work/ibl/ibl-hero.jpg",
+    title: "ITS Basketball League",
+    subtitle: "Frontend Developer · 2026",
+    alt: "ITS Basketball League 2026",
+    href: "https://ibl-its.id/",
+    linkLabel: "Visit live site",
   },
   {
+    src: "/work/schematics/schematics-hero.png",
     title: "Schematics 2026",
-    year: "2026",
-    role: "Frontend Developer",
-    description:
-      "Competition registration platform for Schematics, the Informatics Engineering department's annual event - handles sign-ups for NLC and REEVA.",
-    link: { label: "Visit live site", href: "https://schematics-its.com/" },
-    images: [
-      "/work/schematics/schematics-hero.png",
-      "/work/schematics/schematics-menu.png",
-      "/work/schematics/schematics-form.png",
-    ],
+    subtitle: "Frontend Developer · 2026",
+    alt: "Schematics 2026 Platform",
+    href: "https://schematics-its.com/",
+    linkLabel: "Visit live site",
+    alignX: -0.85,
   },
   {
-    title: "Personal Portfolio",
-    year: "2025",
-    role: "Frontend Developer",
-    description: "My own portfolio site, built to showcase what I make.",
-    link: { label: "Visit live site", href: "https://portofolio-afrel.vercel.app/" },
-    images: [],
+    src: "/work/ppl-donasi/ppl-donasi-home.png",
+    title: "Donasi Anak Yatim",
+    subtitle: "UI/UX Design · 2025",
+    alt: "Donasi Anak Yatim UI/UX",
+    href: "https://www.figma.com/design/Q2gcB2tYZGt1cGYp8v8Uxl/Donasi-Anak-Yatim?node-id=0-1&t=5CMJP9vB4UHg1XPF-1",
+    linkLabel: "View on Figma",
   },
   {
-    title: "Antasena ITS - Landing Page",
-    year: "2026",
-    role: "UI/UX Design",
-    description:
-      "A landing page concept I designed for the Antasena ITS Team recruitment task - Indonesia's first team turning clean energy into speed. (Didn't get in, but the design stays.)",
-    link: {
-      label: "View on Figma",
-      href: "https://www.figma.com/design/mzUUUkD1PSQqv50609041Y/Antasena-Task?node-id=0-1&t=7VoYgcWC9OLVyftI-1",
-    },
-    images: ["/work/antasena/antasena-hero.png", "/work/antasena/antasena-achievement.png"],
+    src: "/work/antasena/antasena-hero.jpg",
+    title: "Antasena ITS",
+    subtitle: "UI/UX Design · 2026",
+    alt: "Antasena ITS Landing Page",
+    href: "https://www.figma.com/design/mzUUUkD1PSQqv50609041Y/Antasena-Task?node-id=0-1&t=7VoYgcWC9OLVyftI-1",
+    linkLabel: "View on Figma",
   },
   {
+    src: "/work/hmmt/hmmt-desktop.png",
     title: "HMMT - Rotasi Arunika",
-    year: "2026",
-    role: "Frontend Developer",
-    description:
-      "Profile website for Himpunan Mahasiswa Metalurgi (HMMT), covering the association's history, structure, events, and gallery.",
-    link: null,
-    images: ["/work/hmmt/hmmt-desktop.png", "/work/hmmt/hmmt-mobile.png"],
+    subtitle: "Frontend Developer · 2026",
+    alt: "HMMT Rotasi Arunika Website",
+    alignX: -0.75,
   },
 ];
 
+const PRESETS: BendPreset[] = ["liquid", "ribbon", "vortex", "arch"];
+
 export default function WorkPage() {
-  const [hovered, setHovered] = useState<number | null>(null);
-  const [projects, setProjects] = useState<Project[]>(DEFAULT_PROJECTS);
+  const [items, setItems] = useState<FlexCarouselItem[]>(DEFAULT_WORK_ITEMS);
+  const [preset, setPreset] = useState<BendPreset>("liquid");
+  const [cardHeight, setCardHeight] = useState(0.5);
+
+  useEffect(() => {
+    function updateDimensions() {
+      if (window.innerWidth < 640) {
+        setCardHeight(0.46);
+      } else if (window.innerWidth < 1024) {
+        setCardHeight(0.50);
+      } else {
+        setCardHeight(0.54);
+      }
+    }
+
+    updateDimensions();
+    window.addEventListener("resize", updateDimensions);
+    return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
 
   useEffect(() => {
     async function fetchWorkProjects() {
@@ -86,35 +84,31 @@ export default function WorkPage() {
           .order("created_at", { ascending: false });
 
         if (!error && data && data.length > 0) {
-          const dbProjects: Project[] = (data as Post[]).map((p) => {
-            const projectImages: string[] =
-              p.images && p.images.length > 0
-                ? p.images
-                : p.cover_image
-                ? [p.cover_image]
-                : [];
+          const dbItems: FlexCarouselItem[] = [];
 
-            return {
-              id: p.id,
-              title: p.title,
-              year: p.year || new Date(p.created_at).getFullYear().toString(),
-              role: p.role || p.category || "Project",
-              description: p.short_description || p.content || "",
-              link: p.link_url
-                ? {
-                    label: p.link_label || "Visit live site",
-                    href: p.link_url,
-                  }
-                : null,
-              images: projectImages,
-            };
+          (data as Post[]).forEach((p) => {
+            const primaryImage =
+              p.images && p.images.length > 0
+                ? p.images[0]
+                : p.cover_image;
+
+            if (primaryImage) {
+              dbItems.push({
+                src: primaryImage,
+                title: p.title,
+                subtitle: `${p.role || p.category || "Project"} · ${
+                  p.year || new Date(p.created_at).getFullYear().toString()
+                }`,
+                alt: p.title,
+                href: p.link_url || undefined,
+                linkLabel: p.link_label || "Visit live site",
+              });
+            }
           });
 
-          // Combine with default projects and sort by year descending
-          const combined = [...dbProjects, ...DEFAULT_PROJECTS].sort(
-            (a, b) => Number(b.year) - Number(a.year)
-          );
-          setProjects(combined);
+          if (dbItems.length > 0) {
+            setItems([...dbItems, ...DEFAULT_WORK_ITEMS]);
+          }
         }
       } catch (err) {
         console.error("Error fetching work projects:", err);
@@ -125,69 +119,67 @@ export default function WorkPage() {
   }, []);
 
   return (
-    <section className="flex-1 overflow-y-auto bg-background px-6 py-16 sm:px-10">
-      <div className="mx-auto max-w-3xl">
-        <h1 className="text-3xl font-extrabold uppercase tracking-tight text-foreground sm:text-4xl">
-          Work
-        </h1>
+    <section className="relative flex flex-1 flex-col items-center justify-between overflow-hidden bg-background">
+      <div
+        className="pointer-events-none absolute inset-0 bg-circuit opacity-[0.15]"
+        aria-hidden="true"
+      />
 
-        <div className="mt-8">
-          {projects.map((p, i) => (
-            <div
-              key={p.title}
-              onMouseEnter={() => setHovered(i)}
-              onMouseLeave={() => setHovered(null)}
-              className="border-b border-foreground/10 py-6"
-            >
-              <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                <h2
-                  className={`text-xl font-bold transition-colors duration-150 ease-out sm:text-2xl ${
-                    hovered === i ? "text-foreground" : "text-foreground/70"
-                  }`}
-                >
-                  {p.title}
-                </h2>
-                <span className="font-mono text-xs text-foreground/40">
-                  {p.year} - {p.role}
-                </span>
-              </div>
+      {/* Top Header Bar */}
+      <header className="relative z-10 w-full max-w-6xl px-4 pt-3 pb-2 sm:px-10 sm:pt-6 sm:pb-2">
+        <span className="block font-mono text-[10px] tracking-widest text-foreground/45 uppercase whitespace-nowrap sm:text-xs">
+          Portfolio / Selected Works
+        </span>
 
-              <p className="mt-2 max-w-2xl text-sm text-foreground/60">{p.description}</p>
+        <div className="mt-1 flex items-center justify-between gap-2">
+          <h1 className="text-2xl font-black tracking-tight text-foreground sm:text-3xl">
+            work<span className="text-[#6A00FF]">.</span>
+          </h1>
 
-              {p.link && (
-                <a
-                  href={p.link.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-2 inline-block text-sm text-[#6A00FF] underline underline-offset-2 transition-opacity duration-150 ease-out hover:opacity-70"
-                >
-                  {p.link.label} ↗
-                </a>
-              )}
-
-              {p.images.length > 0 && (
-                <div
-                  className="grid overflow-hidden transition-all duration-300 ease-out"
-                  style={{ gridTemplateRows: hovered === i ? "1fr" : "0fr" }}
-                >
-                  <div className="min-h-0 overflow-hidden">
-                    <div className="mt-4 flex gap-3 overflow-x-auto pb-1">
-                      {p.images.map((src) => (
-                        <img
-                          key={src}
-                          src={src}
-                          alt={p.title}
-                          className="h-40 w-auto shrink-0 rounded-lg object-cover ring-1 ring-foreground/10 sm:h-56"
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
+          {/* Preset Switcher Pills */}
+          <div className="flex shrink-0 items-center gap-0.5 rounded-full border border-foreground/10 bg-background/80 p-0.5 backdrop-blur-md shadow-xs sm:gap-1 sm:p-1">
+            {PRESETS.map((p) => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => setPreset(p)}
+                className={`rounded-full px-2 py-0.5 text-[10px] font-mono capitalize transition-all duration-200 cursor-pointer sm:px-3 sm:py-1 sm:text-xs ${
+                  preset === p
+                    ? "bg-foreground text-background font-semibold shadow-xs"
+                    : "text-foreground/50 hover:text-foreground"
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
         </div>
+      </header>
+
+      {/* FlexCarousel Centerpiece */}
+      <div className="relative z-10 flex-1 w-full min-h-[320px] sm:min-h-[360px] flex items-center justify-center">
+        <FlexCarousel
+          items={items}
+          preset={preset}
+          intro="rise"
+          cardHeight={cardHeight}
+          radius={14}
+          fit="landscape"
+          squeeze={0.2}
+          focusOnClick={true}
+          captions={true}
+          captureWheel={true}
+          className="w-full h-full"
+        />
       </div>
+
+      {/* Subtle bottom indicator */}
+      <footer className="relative z-10 pb-2 text-center sm:pb-3">
+        <p className="font-mono text-[10px] tracking-wider text-foreground/30 uppercase sm:text-[11px]">
+          <span className="sm:hidden">swipe to explore · tap to focus</span>
+          <span className="hidden sm:inline">drag to scroll · click to focus</span>
+        </p>
+      </footer>
     </section>
   );
 }
