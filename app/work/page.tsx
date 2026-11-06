@@ -1,11 +1,9 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import WorkClient from "@/components/work/WorkClient";
 import { getSupabaseClient } from "@/utils/supabase/client";
 import { Post } from "@/types/post";
-import FlexCarousel, { FlexCarouselItem } from "@/components/work/FlexCarousel";
+import { FlexCarouselItem } from "@/components/work/FlexCarousel";
 
-type BendPreset = "liquid" | "ribbon" | "vortex" | "arch";
+export const revalidate = 60;
 
 const DEFAULT_WORK_ITEMS: FlexCarouselItem[] = [
   {
@@ -50,136 +48,57 @@ const DEFAULT_WORK_ITEMS: FlexCarouselItem[] = [
   },
 ];
 
-const PRESETS: BendPreset[] = ["liquid", "ribbon", "vortex", "arch"];
+async function getWorkItems(): Promise<FlexCarouselItem[]> {
+  try {
+    const { data, error } = await getSupabaseClient()
+      .from("posts")
+      .select("*")
+      .eq("status", "published")
+      .eq("target", "work")
+      .order("created_at", { ascending: false });
 
-export default function WorkPage() {
-  const [items, setItems] = useState<FlexCarouselItem[]>(DEFAULT_WORK_ITEMS);
-  const [preset, setPreset] = useState<BendPreset>("liquid");
-  const [cardHeight, setCardHeight] = useState(0.5);
+    if (!error && data && data.length > 0) {
+      const dbItems: FlexCarouselItem[] = [];
 
-  useEffect(() => {
-    function updateDimensions() {
-      if (window.innerWidth < 640) {
-        setCardHeight(0.46);
-      } else if (window.innerWidth < 1024) {
-        setCardHeight(0.50);
-      } else {
-        setCardHeight(0.54);
-      }
-    }
+      (data as Post[]).forEach((p) => {
+        const primaryImage =
+          p.images && p.images.length > 0 ? p.images[0] : p.cover_image;
 
-    updateDimensions();
-    window.addEventListener("resize", updateDimensions);
-    return () => window.removeEventListener("resize", updateDimensions);
-  }, []);
-
-  useEffect(() => {
-    async function fetchWorkProjects() {
-      try {
-        const { data, error } = await getSupabaseClient()
-          .from("posts")
-          .select("*")
-          .eq("status", "published")
-          .eq("target", "work")
-          .order("created_at", { ascending: false });
-
-        if (!error && data && data.length > 0) {
-          const dbItems: FlexCarouselItem[] = [];
-
-          (data as Post[]).forEach((p) => {
-            const primaryImage =
-              p.images && p.images.length > 0
-                ? p.images[0]
-                : p.cover_image;
-
-            if (primaryImage) {
-              dbItems.push({
-                src: primaryImage,
-                title: p.title,
-                subtitle: `${p.role || p.category || "Project"} · ${
-                  p.year || new Date(p.created_at).getFullYear().toString()
-                }`,
-                alt: p.title,
-                href: p.link_url || undefined,
-                linkLabel: p.link_label || "Visit live site",
-              });
-            }
+        if (primaryImage) {
+          dbItems.push({
+            src: primaryImage,
+            title: p.title,
+            subtitle: `${p.role || p.category || "Project"} · ${
+              p.year || new Date(p.created_at).getFullYear().toString()
+            }`,
+            alt: p.title,
+            href: p.link_url || undefined,
+            linkLabel: p.link_label || "Visit live site",
           });
-
-          if (dbItems.length > 0) {
-            setItems([...dbItems, ...DEFAULT_WORK_ITEMS]);
-          }
         }
-      } catch (err) {
-        console.error("Error fetching work projects:", err);
+      });
+
+      if (dbItems.length > 0) {
+        return [...dbItems, ...DEFAULT_WORK_ITEMS];
       }
     }
+  } catch (err) {
+    console.error("Error fetching work projects on server:", err);
+  }
 
-    fetchWorkProjects();
-  }, []);
+  return DEFAULT_WORK_ITEMS;
+}
+
+export default async function WorkPage() {
+  const items = await getWorkItems();
 
   return (
-    <section className="relative flex flex-1 flex-col items-center justify-between overflow-hidden bg-background">
-      <div
-        className="pointer-events-none absolute inset-0 bg-circuit opacity-[0.15]"
-        aria-hidden="true"
-      />
-
-      {/* Top Header Bar */}
-      <header className="relative z-10 w-full max-w-6xl px-4 pt-3 pb-2 sm:px-10 sm:pt-6 sm:pb-2">
-        <span className="block font-mono text-[10px] tracking-widest text-foreground/45 uppercase whitespace-nowrap sm:text-xs">
-          Portfolio / Selected Works
-        </span>
-
-        <div className="mt-1 flex items-center justify-between gap-2">
-          <h1 className="text-2xl font-black tracking-tight text-foreground sm:text-3xl">
-            work<span className="text-[#6A00FF]">.</span>
-          </h1>
-
-          {/* Preset Switcher Pills */}
-          <div className="flex shrink-0 items-center gap-0.5 rounded-full border border-foreground/10 bg-background/80 p-0.5 backdrop-blur-md shadow-xs sm:gap-1 sm:p-1">
-            {PRESETS.map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => setPreset(p)}
-                className={`rounded-full px-2 py-0.5 text-[10px] font-mono capitalize transition-all duration-200 cursor-pointer sm:px-3 sm:py-1 sm:text-xs ${
-                  preset === p
-                    ? "bg-foreground text-background font-semibold shadow-xs"
-                    : "text-foreground/50 hover:text-foreground"
-                }`}
-              >
-                {p}
-              </button>
-            ))}
-          </div>
-        </div>
-      </header>
-
-      {/* FlexCarousel Centerpiece */}
-      <div className="relative z-10 flex-1 w-full min-h-[320px] sm:min-h-[360px] flex items-center justify-center">
-        <FlexCarousel
-          items={items}
-          preset={preset}
-          intro="rise"
-          cardHeight={cardHeight}
-          radius={14}
-          fit="landscape"
-          squeeze={0.2}
-          focusOnClick={true}
-          captions={true}
-          captureWheel={true}
-          className="w-full h-full"
-        />
-      </div>
-
-      {/* Subtle bottom indicator */}
-      <footer className="relative z-10 pb-2 text-center sm:pb-3">
-        <p className="font-mono text-[10px] tracking-wider text-foreground/30 uppercase sm:text-[11px]">
-          <span className="sm:hidden">swipe to explore · tap to focus</span>
-          <span className="hidden sm:inline">drag to scroll · click to focus</span>
-        </p>
-      </footer>
-    </section>
+    <>
+      {/* SSR Image Preload directives so browser loads hero assets immediately */}
+      {items.slice(0, 4).map((item) => (
+        <link key={item.src} rel="preload" as="image" href={item.src} />
+      ))}
+      <WorkClient initialItems={items} />
+    </>
   );
 }

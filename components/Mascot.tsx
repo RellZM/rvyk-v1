@@ -68,7 +68,21 @@ export default function Mascot() {
     };
 
     scheduleBlink();
-    return () => clearTimeout(timeout);
+
+    // Reset position when resizing to desktop so PC mascot is never displaced
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setPos({ x: 0, y: 0 });
+        setDragging(false);
+        dragOrigin.current = null;
+      }
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
@@ -121,10 +135,6 @@ export default function Mascot() {
       role="img"
       aria-label="Maskot"
       className="relative h-[clamp(10rem,26vh,16rem)] w-[clamp(10rem,26vh,16rem)] sm:h-[clamp(13rem,30vh,18rem)] sm:w-[clamp(13rem,30vh,18rem)] lg:h-[min(72vh,38vw,560px)] lg:w-[min(72vh,38vw,560px)] cursor-grab touch-none select-none active:cursor-grabbing lg:cursor-default lg:touch-auto"
-      style={{
-        transform: `translate(${pos.x}px, ${pos.y}px)`,
-        transition: dragging ? "none" : "transform 0.2s ease-out",
-      }}
     >
       <div
         className={`absolute bottom-full left-1/2 mb-3 w-max max-w-64 -translate-x-1/2 rounded-2xl bg-white px-4 py-2 text-center text-sm font-medium text-black shadow-lg transition-all duration-150 ease-out ${
@@ -138,7 +148,7 @@ export default function Mascot() {
         />
       </div>
 
-      {/* PC / Desktop: Mascot GIF Baru */}
+      {/* PC / Desktop: Mascot GIF Baru (never displaced by mobile drag) */}
       <div className="relative hidden h-full w-full lg:block">
         <img
           src={GIF_INACTIVE_SRC}
@@ -158,8 +168,14 @@ export default function Mascot() {
         />
       </div>
 
-      {/* Mobile: Mascot Lama (SVG Base + Eyes) */}
-      <div className="relative block h-full w-full lg:hidden">
+      {/* Mobile: Mascot Lama (SVG Base + Eyes) with drag transform */}
+      <div
+        className="relative block h-full w-full lg:hidden"
+        style={{
+          transform: `translate3d(${pos.x}px, ${pos.y}px, 0)`,
+          transition: dragging ? "none" : "transform 0.2s ease-out",
+        }}
+      >
         <img src={HEAD_SRC} alt="" draggable={false} className="absolute inset-0 h-full w-full" />
         <img
           src={EYES_SRC[expression]}

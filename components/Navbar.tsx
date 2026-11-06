@@ -64,15 +64,15 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full shrink-0 border-b border-foreground/10 bg-background/80 backdrop-blur-md">
-      <nav className="flex h-12 w-full items-center gap-3 px-4 font-mono text-sm sm:px-6">
+      <nav className="flex h-12 w-full items-center gap-1.5 px-2.5 font-mono text-xs sm:gap-3 sm:px-6 sm:text-sm">
         {/* brand pill */}
         <Link
           href="/admin"
           onDoubleClick={() => router.push("/")}
           aria-label="Admin Dashboard"
-          className="flex shrink-0 items-center rounded p-1.5 transition-all duration-100 ease-out hover:opacity-80 active:scale-95"
+          className="flex shrink-0 items-center rounded p-1 sm:p-1.5 transition-all duration-100 ease-out hover:opacity-80 active:scale-95"
         >
-          <RvLogo className="h-6 w-auto text-[#6A00FF]" mono mark />
+          <RvLogo className="h-5 w-auto text-[#6A00FF] sm:h-6" mono mark />
         </Link>
 
         <span className="hidden text-foreground/20 sm:inline">│</span>
@@ -80,7 +80,7 @@ export default function Navbar() {
         {/* nav */}
         <ul
           ref={listRef}
-          className="relative flex items-center gap-1 sm:gap-2"
+          className="relative flex shrink-0 items-center gap-0.5 sm:gap-2"
           onMouseLeave={handleLeaveList}
         >
           <div
@@ -97,19 +97,22 @@ export default function Navbar() {
           {NAV_ITEMS.map((item) => {
             const active = pathname === item.href;
             return (
-              <li key={item.href}>
+              <li key={item.href} className="shrink-0">
                 <Link
                   href={item.href}
+                  prefetch={true}
                   aria-current={active ? "page" : undefined}
                   onMouseEnter={handleEnter}
-                  className={
+                  className={`relative z-10 flex flex-row flex-nowrap items-center whitespace-nowrap shrink-0 rounded px-1.5 py-1 text-xs transition-all duration-100 ease-out active:scale-95 sm:px-2 sm:text-sm ${
                     active
-                      ? "relative z-10 rounded bg-[#6A00FF] px-2 py-1 text-white transition-all duration-100 ease-out active:scale-95"
-                      : "relative z-10 rounded px-2 py-1 text-foreground/70 transition-colors duration-100 ease-out hover:text-foreground active:scale-95"
-                  }
+                      ? "bg-[#6A00FF] font-medium text-white shadow-xs"
+                      : "text-foreground/70 hover:text-foreground"
+                  }`}
                 >
-                  {item.label}
-                  {active ? " *" : ""}
+                  <span className="whitespace-nowrap select-none">
+                    {item.label}
+                    {active ? "\u00A0*" : ""}
+                  </span>
                 </Link>
               </li>
             );
@@ -117,7 +120,7 @@ export default function Navbar() {
         </ul>
 
         {/* clock + theme toggle */}
-        <div className="ml-auto flex shrink-0 items-center gap-2 rounded-full bg-foreground/5 px-2 py-1 text-xs text-foreground/80 ring-1 ring-foreground/10 transition-colors duration-100 ease-out hover:bg-foreground/10 sm:px-3 sm:py-1.5">
+        <div className="ml-auto flex shrink-0 items-center gap-1.5 rounded-full bg-foreground/5 px-1.5 py-1 text-xs text-foreground/80 ring-1 ring-foreground/10 transition-colors duration-100 ease-out hover:bg-foreground/10 sm:gap-2 sm:px-3 sm:py-1.5">
           <span className="hidden items-center gap-2 sm:inline-flex">
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" aria-hidden />
             <span className="tabular-nums">REY {time ?? "--:--"}</span>

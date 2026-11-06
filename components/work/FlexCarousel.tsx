@@ -428,7 +428,7 @@ const FlexCarousel = ({
   const engineRef = useRef<Engine | null>(null);
   const callbacksRef = useRef<Callbacks>({ onChange, onSelect });
   const [active, setActive] = useState(0);
-  const [revealed, setRevealed] = useState(false);
+  const [revealed, setRevealed] = useState(intro === 'none');
   const [focusOpen, setFocusOpen] = useState(false);
 
   const base = BEND_PRESETS[preset] || BEND_PRESETS.liquid;
@@ -596,7 +596,7 @@ const FlexCarousel = ({
       touch: false,
       samples: [] as { x: number; t: number }[]
     };
-    const introState = { kind: 'none', t: 0, running: false, done: false, readyAt: 0 };
+    const introState = { kind: 'none', t: 0, running: false, done: intro === 'none', readyAt: 0 };
     const focus = { index: -1, pending: -1, t: 0, v: 0, target: 0 };
     let instances: Instance[] = [];
 
@@ -884,11 +884,16 @@ const FlexCarousel = ({
       layout = m;
 
       if (!introState.running && !introState.done) {
-        const allSettled = slots.every(slot => slot.loaded || slot.failed);
-        if (allSettled || now - introState.readyAt > 3500) {
-          goal = snapPoint(m, goal);
-          pos = goal;
-          beginIntro(s, m);
+        if (s.intro === 'none') {
+          introState.done = true;
+          setRevealed(true);
+        } else {
+          const allSettled = slots.every(slot => slot.loaded || slot.failed);
+          if (allSettled || now - introState.readyAt > 3500) {
+            goal = snapPoint(m, goal);
+            pos = goal;
+            beginIntro(s, m);
+          }
         }
       }
       if (introState.running) {
@@ -1414,7 +1419,7 @@ const FlexCarousel = ({
       <style>{STYLE}</style>
       {captions && current && revealed && (
         <div
-          className="pointer-events-none absolute inset-x-0 top-[calc(var(--flex-carousel-center,50%)_+_var(--flex-carousel-half)_*_var(--flex-carousel-lift,1)_+_28px)] sm:top-[calc(var(--flex-carousel-center,50%)_+_var(--flex-carousel-half)_*_var(--flex-carousel-lift,1)_+_20px)] flex flex-col items-center gap-2 px-4 text-center animate-[flex-carousel-reveal_900ms_ease_both] motion-reduce:animate-none"
+          className="pointer-events-none absolute inset-x-0 top-[calc(var(--flex-carousel-center,50%)_+_var(--flex-carousel-half)_*_var(--flex-carousel-lift,1)_+_52px)] sm:top-[calc(var(--flex-carousel-center,50%)_+_var(--flex-carousel-half)_*_var(--flex-carousel-lift,1)_+_24px)] flex flex-col items-center gap-2 px-4 text-center animate-[flex-carousel-reveal_900ms_ease_both] motion-reduce:animate-none"
           aria-hidden="true"
         >
           <span
