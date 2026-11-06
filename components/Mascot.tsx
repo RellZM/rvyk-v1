@@ -90,6 +90,13 @@ export default function Mascot() {
     e.currentTarget.setPointerCapture(e.pointerId);
     dragOrigin.current = { pointer: { x: e.clientX, y: e.clientY }, pos };
     setDragging(true);
+    setHovering(true);
+    if (!hasGreeted.current) {
+      hasGreeted.current = true;
+      setChatMessage(GREETING);
+    } else {
+      setChatMessage(CHAT_LINES[Math.floor(Math.random() * CHAT_LINES.length)]);
+    }
   }
 
   function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
@@ -124,6 +131,20 @@ export default function Mascot() {
         ? "closed"
         : "open";
 
+    const speechBubble = (
+    <div
+      className={`absolute bottom-full left-1/2 mb-3 w-max max-w-64 -translate-x-1/2 rounded-2xl bg-white px-4 py-2 text-center text-sm font-medium text-black shadow-lg transition-all duration-150 ease-out z-20 ${
+        hovering ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-1 opacity-0"
+      }`}
+    >
+      {chatMessage}
+      <span
+        className="absolute left-1/2 top-full h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-white"
+        aria-hidden
+      />
+    </div>
+  );
+
   return (
     <div
       onPointerDown={handlePointerDown}
@@ -136,20 +157,9 @@ export default function Mascot() {
       aria-label="Maskot"
       className="relative h-[clamp(10rem,26vh,16rem)] w-[clamp(10rem,26vh,16rem)] sm:h-[clamp(13rem,30vh,18rem)] sm:w-[clamp(13rem,30vh,18rem)] lg:h-[min(72vh,38vw,560px)] lg:w-[min(72vh,38vw,560px)] cursor-grab touch-none select-none active:cursor-grabbing lg:cursor-default lg:touch-auto"
     >
-      <div
-        className={`absolute bottom-full left-1/2 mb-3 w-max max-w-64 -translate-x-1/2 rounded-2xl bg-white px-4 py-2 text-center text-sm font-medium text-black shadow-lg transition-all duration-150 ease-out ${
-          hovering ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-1 opacity-0"
-        }`}
-      >
-        {chatMessage}
-        <span
-          className="absolute left-1/2 top-full h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-white"
-          aria-hidden
-        />
-      </div>
-
       {/* PC / Desktop: Mascot GIF Baru (never displaced by mobile drag) */}
       <div className="relative hidden h-full w-full lg:block">
+        {speechBubble}
         <img
           src={GIF_INACTIVE_SRC}
           alt="Maskot Inactive"
@@ -176,6 +186,7 @@ export default function Mascot() {
           transition: dragging ? "none" : "transform 0.2s ease-out",
         }}
       >
+        {speechBubble}
         <img src={HEAD_SRC} alt="" draggable={false} className="absolute inset-0 h-full w-full" />
         <img
           src={EYES_SRC[expression]}
