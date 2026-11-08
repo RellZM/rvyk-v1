@@ -121,8 +121,7 @@ export default function Navbar() {
 
         {/* clock + theme toggle */}
         <div className="ml-auto flex shrink-0 items-center gap-1.5 rounded-full bg-foreground/5 px-1.5 py-1 text-xs text-foreground/80 ring-1 ring-foreground/10 transition-colors duration-100 ease-out hover:bg-foreground/10 sm:gap-2 sm:px-3 sm:py-1.5">
-          <span className="hidden items-center gap-2 sm:inline-flex">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" aria-hidden />
+          <span className="hidden items-center sm:inline-flex">
             <span className="tabular-nums">REY {time ?? "--:--"}</span>
           </span>
           <ThemeToggle />

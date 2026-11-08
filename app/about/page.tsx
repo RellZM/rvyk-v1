@@ -99,7 +99,7 @@ function IconSvg({ icon }: { icon: SimpleIconType }) {
     <svg
       role="img"
       viewBox="0 0 24 24"
-      className="h-4 w-4 fill-current transition-transform duration-150 group-hover:scale-110"
+      className="h-6 w-6 sm:h-7 sm:w-7 fill-current transition-transform duration-200 ease-out group-hover:scale-115"
       aria-label={icon.title}>
       <path d={icon.path} />
     </svg>
@@ -112,11 +112,7 @@ export default function AboutPage() {
       <div className="mx-auto max-w-3xl">
         <div className="flex flex-col-reverse gap-10 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
           <div className="min-w-0">
-            <span className="font-mono text-xs uppercase tracking-widest text-foreground/50">
-              About / RVYK
-            </span>
-
-            <h1 className="mt-3 text-5xl font-extrabold tracking-tight text-foreground sm:text-6xl">
+            <h1 className="text-5xl font-extrabold tracking-tight text-foreground sm:text-6xl">
               about
               <span className="text-[#6A00FF]">.</span>
             </h1>
@@ -206,22 +202,14 @@ export default function AboutPage() {
               <div className="mb-3 font-mono text-[11px] uppercase tracking-wider text-foreground/40">
                 Languages
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              <div className="flex flex-wrap gap-2.5 sm:gap-3">
                 {LANGUAGES.map((tech) => (
                   <div
                     key={tech.name}
-                    className="group flex items-center gap-3 rounded-lg border border-foreground/10 bg-foreground/[0.02] p-2.5 transition-all duration-150 hover:border-foreground/25 hover:bg-foreground/[0.05]">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-foreground/5 text-foreground/75 transition-colors group-hover:text-foreground">
-                      <IconSvg icon={tech.icon} />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="truncate text-[13px] font-medium text-foreground">
-                        {tech.name}
-                      </div>
-                      <div className="font-mono text-[10px] text-foreground/40">
-                        {tech.desc}
-                      </div>
-                    </div>
+                    title={tech.name}
+                    aria-label={tech.name}
+                    className="group flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] text-foreground/75 transition-all duration-150 hover:border-[#6A00FF]/50 hover:bg-foreground/[0.05] hover:text-[#6A00FF] active:scale-95 shadow-xs">
+                    <IconSvg icon={tech.icon} />
                   </div>
                 ))}
               </div>
@@ -231,22 +219,14 @@ export default function AboutPage() {
               <div className="mb-3 font-mono text-[11px] uppercase tracking-wider text-foreground/40">
                 Frameworks & Ecosystem
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              <div className="flex flex-wrap gap-2.5 sm:gap-3">
                 {FRAMEWORKS.map((tech) => (
                   <div
                     key={tech.name}
-                    className="group flex items-center gap-3 rounded-lg border border-foreground/10 bg-foreground/[0.02] p-2.5 transition-all duration-150 hover:border-foreground/25 hover:bg-foreground/[0.05]">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-foreground/5 text-foreground/75 transition-colors group-hover:text-foreground">
-                      <IconSvg icon={tech.icon} />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="truncate text-[13px] font-medium text-foreground">
-                        {tech.name}
-                      </div>
-                      <div className="font-mono text-[10px] text-foreground/40">
-                        {tech.desc}
-                      </div>
-                    </div>
+                    title={tech.name}
+                    aria-label={tech.name}
+                    className="group flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] text-foreground/75 transition-all duration-150 hover:border-[#6A00FF]/50 hover:bg-foreground/[0.05] hover:text-[#6A00FF] active:scale-95 shadow-xs">
+                    <IconSvg icon={tech.icon} />
                   </div>
                 ))}
               </div>

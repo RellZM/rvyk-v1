@@ -41,11 +41,7 @@ export default function WorkClient({
 
       {/* Top Header Bar */}
       <header className="relative z-10 w-full max-w-6xl px-4 pt-3 pb-2 sm:px-10 sm:pt-6 sm:pb-2">
-        <span className="block font-mono text-[10px] tracking-widest text-foreground/45 uppercase whitespace-nowrap sm:text-xs">
-          Portfolio / Selected Works
-        </span>
-
-        <div className="mt-1 flex items-center justify-between gap-2">
+        <div className="flex items-center justify-between gap-2">
           <h1 className="text-2xl font-black tracking-tight text-foreground sm:text-3xl">
             work<span className="text-[#6A00FF]">.</span>
           </h1>
