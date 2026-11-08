@@ -21,8 +21,8 @@ export default function NowPage() {
   return (
     <section className="flex-1 overflow-y-auto bg-background px-6 py-6 sm:py-16 sm:px-10">
       <div className="mx-auto max-w-3xl">
-        <h1 className="text-3xl font-extrabold uppercase tracking-tight text-foreground sm:text-4xl">
-          Now.
+        <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          now<span className="text-[#6A00FF]">.</span>
         </h1>
         <p className="mt-2 text-sm text-foreground/60 sm:text-base">
           What I&apos;m up to currently

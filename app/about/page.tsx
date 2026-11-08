@@ -106,6 +106,27 @@ function IconSvg({ icon }: { icon: SimpleIconType }) {
   );
 }
 
+function TechBadge({ tech }: { tech: TechItem }) {
+  return (
+    <div
+      title={tech.name}
+      aria-label={tech.name}
+      className="group flex h-14 w-14 sm:h-16 sm:w-16 items-center rounded-xl border border-foreground/10 bg-foreground/[0.02] text-foreground/75 overflow-hidden transition-all duration-300 ease-out hover:w-56 sm:hover:w-64 hover:border-[#6A00FF]/50 hover:bg-foreground/[0.05] hover:shadow-xs active:scale-95 cursor-pointer shrink-0">
+      <div className="flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center text-foreground/75 transition-colors duration-200 group-hover:text-[#6A00FF]">
+        <IconSvg icon={tech.icon} />
+      </div>
+      <div className="flex flex-col justify-center min-w-0 pr-4 whitespace-nowrap overflow-hidden opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-hover:delay-100">
+        <span className="text-xs sm:text-[13px] font-bold tracking-tight text-foreground truncate">
+          {tech.name}
+        </span>
+        <span className="text-[10px] sm:text-[11px] font-mono text-foreground/60 mt-0.5 truncate">
+          {tech.desc}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function AboutPage() {
   return (
     <section className="flex-1 overflow-y-auto bg-background px-6 py-6 sm:py-16 sm:px-10">
@@ -204,13 +225,7 @@ export default function AboutPage() {
               </div>
               <div className="flex flex-wrap gap-2.5 sm:gap-3">
                 {LANGUAGES.map((tech) => (
-                  <div
-                    key={tech.name}
-                    title={tech.name}
-                    aria-label={tech.name}
-                    className="group flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] text-foreground/75 transition-all duration-150 hover:border-[#6A00FF]/50 hover:bg-foreground/[0.05] hover:text-[#6A00FF] active:scale-95 shadow-xs">
-                    <IconSvg icon={tech.icon} />
-                  </div>
+                  <TechBadge key={tech.name} tech={tech} />
                 ))}
               </div>
             </div>
@@ -221,13 +236,7 @@ export default function AboutPage() {
               </div>
               <div className="flex flex-wrap gap-2.5 sm:gap-3">
                 {FRAMEWORKS.map((tech) => (
-                  <div
-                    key={tech.name}
-                    title={tech.name}
-                    aria-label={tech.name}
-                    className="group flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] text-foreground/75 transition-all duration-150 hover:border-[#6A00FF]/50 hover:bg-foreground/[0.05] hover:text-[#6A00FF] active:scale-95 shadow-xs">
-                    <IconSvg icon={tech.icon} />
-                  </div>
+                  <TechBadge key={tech.name} tech={tech} />
                 ))}
               </div>
             </div>
