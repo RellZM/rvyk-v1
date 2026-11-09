@@ -1005,7 +1005,7 @@ const FlexCarousel = ({
       const homeX = width / 2;
       const homeY = isMobile
         ? Math.max(m.cardH * 0.62, Math.min(height * 0.43, 290))
-        : height * 0.5;
+        : height * 0.42;
       const centerPct = ((homeY / height) * 100).toFixed(2);
       container.style.setProperty('--flex-carousel-half', `${((m.cardH / height) * 50).toFixed(2)}%`);
       container.style.setProperty('--flex-carousel-center', `${centerPct}%`);

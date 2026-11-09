@@ -30,15 +30,10 @@ export default function WorkClient({
 
   return (
     <section className="relative flex flex-1 flex-col items-center justify-between overflow-hidden bg-background">
-      <div
-        className="pointer-events-none absolute inset-0 bg-circuit opacity-[0.15]"
-        aria-hidden="true"
-      />
-
       {/* Top Header Bar */}
-      <header className="relative z-10 w-full max-w-6xl px-4 pt-3 pb-2 sm:px-10 sm:pt-6 sm:pb-2">
-        <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-5xl">
-          work<span className="text-[#6A00FF]">.</span>
+      <header className="relative z-10 w-full max-w-6xl px-4 pt-4 pb-2 sm:px-10 sm:pt-4 sm:pb-0">
+        <h1 className="text-6xl font-black tracking-tight text-foreground sm:text-6xl lg:text-7xl animate-[work-reveal_500ms_cubic-bezier(0.16,1,0.3,1)_both] motion-reduce:animate-none">
+          work<span className="inline-block text-[#6A00FF] animate-[dot-pop_400ms_cubic-bezier(0.34,1.56,0.64,1)_220ms_both] motion-reduce:animate-none">.</span>
         </h1>
       </header>
 
