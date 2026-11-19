@@ -16,8 +16,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RVYK",
-  description: "Make your dream out of nothing.",
+  title: "Afrel Zharif Muflih (RVYK) | Web Developer & Cybersecurity Enthusiast",
+  description:
+    "Afrel Zharif Muflih, known as RVYK, is a web developer and cybersecurity enthusiast who builds thoughtful digital experiences and explores the security of technology.",
+  keywords: [
+    "Afrel Zharif Muflih",
+    "Afrel Zharif",
+    "RVYK",
+    "rvyk",
+    "web developer",
+    "cybersecurity enthusiast",
+  ],
+  authors: [{ name: "Afrel Zharif Muflih" }],
+  openGraph: {
+    title: "Afrel Zharif Muflih (RVYK)",
+    description:
+      "Web developer and cybersecurity enthusiast building thoughtful digital experiences.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
