@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import useHoverHighlight from "@/components/useHoverHighlight";
 
 const SOCIALS = [
   { label: "github", href: "https://github.com/RellZM" },
@@ -8,35 +8,8 @@ const SOCIALS = [
   { label: "instagram", href: "https://instagram.com/afrlzhm" },
 ];
 
-type Highlight = { left: number; top: number; width: number; height: number; visible: boolean };
-
 export default function Footer() {
-  const listRef = useRef<HTMLUListElement>(null);
-  const [highlight, setHighlight] = useState<Highlight>({
-    left: 0,
-    top: 0,
-    width: 0,
-    height: 0,
-    visible: false,
-  });
-
-  function handleEnter(e: React.MouseEvent<HTMLAnchorElement>) {
-    const list = listRef.current;
-    if (!list) return;
-    const targetRect = e.currentTarget.getBoundingClientRect();
-    const listRect = list.getBoundingClientRect();
-    setHighlight({
-      left: targetRect.left - listRect.left,
-      top: targetRect.top - listRect.top,
-      width: targetRect.width,
-      height: targetRect.height,
-      visible: true,
-    });
-  }
-
-  function handleLeaveList() {
-    setHighlight((h) => ({ ...h, visible: false }));
-  }
+  const { listRef, style: highlightStyle, onEnter, onLeave } = useHoverHighlight();
 
   return (
     <footer className="w-full shrink-0 border-t border-foreground/10 bg-background/80 backdrop-blur-md">
@@ -45,17 +18,11 @@ export default function Footer() {
         <ul
           ref={listRef}
           className="relative flex items-center gap-1 sm:gap-2"
-          onMouseLeave={handleLeaveList}
+          onMouseLeave={onLeave}
         >
           <div
             className="pointer-events-none absolute rounded bg-foreground/10 transition-all duration-150 ease-out"
-            style={{
-              left: highlight.left,
-              top: highlight.top,
-              width: highlight.width,
-              height: highlight.height,
-              opacity: highlight.visible ? 1 : 0,
-            }}
+            style={highlightStyle}
             aria-hidden
           />
           {SOCIALS.map((s) => (
@@ -64,7 +31,7 @@ export default function Footer() {
                 href={s.href}
                 target="_blank"
                 rel="noreferrer"
-                onMouseEnter={handleEnter}
+                onMouseEnter={onEnter}
                 className="relative z-10 rounded px-2 py-1 text-foreground/60 transition-colors duration-100 ease-out hover:text-foreground"
               >
                 {s.label}

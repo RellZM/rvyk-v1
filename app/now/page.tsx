@@ -1,19 +1,44 @@
-const ROWS = [
+export const metadata = { title: "now" };
+
+type NowEntry = {
+  date: string;
+  paragraphs: string[];
+  rows: { label: string; body: string }[];
+};
+
+// Newest first. Add a new entry at the top; old ones stay as a log.
+const ENTRIES: NowEntry[] = [
   {
-    label: "Watching",
-    body: "World Cup 2026 (Messi's last dance), and Petal of Reincarnation.",
+    date: "November 22, 2026",
+    paragraphs: [
+      "I'm getting close to the end of my second semester, and most of my energy is going into growing my portfolio as a web developer, building more projects and polishing the ones I already have.",
+      "On the side, I've been busy helping run a few events, like Ikarsid and Petrolida. Beyond that, I want to step outside web dev for a bit and explore new things I haven't tried yet.",
+    ],
+    rows: [
+      { label: "Watching", body: "—" },
+      { label: "Reading", body: "—" },
+      { label: "Playing", body: "Paralives, Let's Build a Zoo, and LEGO Marvel Super Heroes." },
+      {
+        label: "Obsessed with",
+        body: "Honestly, I don't know yet. I'm still figuring out what I want my future to look like.",
+      },
+    ],
   },
   {
-    label: "Reading",
-    body: "Crime and Punishment by Fyodor Dostoyevsky.",
-  },
-  {
-    label: "Playing",
-    body: "Paralives, Blasphemous, and Let's Play a Zoo.",
-  },
-  {
-    label: "Obsessed with",
-    body: "Learning CTF and Pokémon VGC >.< (playing Pokémon Champions right now www.)",
+    date: "July 8, 2026",
+    paragraphs: [
+      "I'm a second-year university student spending most of my time exploring web development and CTF. Lately I've been going deeper into both, building small projects on the web side while learning how to break things on the security side. It's a lot to juggle, but I genuinely enjoy the process of figuring things out.",
+      "Alongside that, I'm preparing myself to apply for a research team. I've been turned away a few times before, and honestly it stung, but each attempt taught me something and left me a little more ready. So I'm taking my time, sharpening what I know, and giving the next chance my best shot.",
+    ],
+    rows: [
+      { label: "Watching", body: "World Cup 2026 (Messi's last dance), and Petal of Reincarnation." },
+      { label: "Reading", body: "Crime and Punishment by Fyodor Dostoyevsky." },
+      { label: "Playing", body: "Paralives, Blasphemous, and Let's Play a Zoo." },
+      {
+        label: "Obsessed with",
+        body: "Learning CTF and Pokémon VGC >.< (playing Pokémon Champions right now www.)",
+      },
+    ],
   },
 ];
 
@@ -28,58 +53,53 @@ export default function NowPage() {
           What I&apos;m up to currently
         </p>
 
-        <div className="mt-8 overflow-hidden rounded-xl border border-foreground/15 bg-foreground/[0.03]">
-          {/* dotted paper body */}
+        {ENTRIES.map((entry) => (
           <div
-            className="relative py-9 pl-12 pr-6 text-[15px] leading-9 sm:pl-14 sm:pr-8"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle, var(--grid-line-soft) 1.2px, transparent 1.2px)",
-              backgroundSize: "22px 22px",
-              backgroundPosition: "center",
-            }}
+            key={entry.date}
+            className="mt-8 overflow-hidden rounded-xl border border-foreground/15 bg-foreground/[0.03]"
           >
-            {/* header */}
-            <div className="flex items-baseline justify-between">
-              <span className="font-mono text-xs uppercase tracking-widest text-foreground/50">
-                Now
-              </span>
-              <span className="font-mono text-sm text-foreground/50">July 8, 2026</span>
-            </div>
+            {/* dotted paper body */}
+            <div
+              className="relative py-9 pl-12 pr-6 text-[15px] leading-9 sm:pl-14 sm:pr-8"
+              style={{
+                backgroundImage:
+                  "radial-gradient(circle, var(--grid-line-soft) 1.2px, transparent 1.2px)",
+                backgroundSize: "22px 22px",
+                backgroundPosition: "center",
+              }}
+            >
+              {/* header */}
+              <div className="flex items-baseline justify-end">
+                <span className="font-mono text-sm text-foreground/50">{entry.date}</span>
+              </div>
 
-            {/* intro paragraph */}
-            <p className="text-foreground/90">
-              I&apos;m a second-year university student spending most of my time exploring web
-              development and CTF. Lately I&apos;ve been going deeper into both, building small
-              projects on the web side while learning how to break things on the security side. It&apos;s
-              a lot to juggle, but I genuinely enjoy the process of figuring things out.
-              <br />
-              <br />
-              Alongside that, I&apos;m preparing myself to apply for a research team. I&apos;ve been
-              turned away a few times before, and honestly it stung, but each attempt taught me
-              something and left me a little more ready. So I&apos;m taking my time, sharpening what
-              I know, and giving the next chance my best shot.
-            </p>
-
-            {/* spacer line */}
-            <div aria-hidden>&nbsp;</div>
-
-            {/* status rows */}
-            <dl>
-              {ROWS.map((row) => (
-                <div
-                  key={row.label}
-                  className="flex flex-col sm:flex-row sm:items-baseline sm:gap-6"
-                >
-                  <dt className="shrink-0 font-mono text-xs uppercase tracking-widest text-foreground/50 sm:w-36">
-                    {row.label}
-                  </dt>
-                  <dd className="text-foreground/90">{row.body}</dd>
-                </div>
+              {/* intro paragraphs */}
+              {entry.paragraphs.map((text, i) => (
+                <p key={i} className={`text-foreground/90 ${i > 0 ? "mt-9" : ""}`}>
+                  {text}
+                </p>
               ))}
-            </dl>
+
+              {/* spacer line */}
+              <div aria-hidden>&nbsp;</div>
+
+              {/* status rows */}
+              <dl>
+                {entry.rows.map((row) => (
+                  <div
+                    key={row.label}
+                    className="flex flex-col sm:flex-row sm:items-baseline sm:gap-6"
+                  >
+                    <dt className="shrink-0 font-mono text-xs uppercase tracking-widest text-foreground/50 sm:w-36">
+                      {row.label}
+                    </dt>
+                    <dd className="text-foreground/90">{row.body}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </section>
   );

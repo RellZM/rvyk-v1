@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import RvLogo from "@/components/RvLogo";
 import ThemeToggle from "@/components/ThemeToggle";
+import useHoverHighlight from "@/components/useHoverHighlight";
 
-export const NAV_ITEMS = [
-  { label: "writing", href: "/writing" },
+const NAV_ITEMS = [
   { label: "work", href: "/work" },
   { label: "now", href: "/now" },
   { label: "about", href: "/about" },
@@ -22,38 +22,10 @@ function formatReykjavik(date: Date) {
   }).format(date);
 }
 
-type Highlight = { left: number; top: number; width: number; height: number; visible: boolean };
-
 export default function Navbar() {
-  const router = useRouter();
   const pathname = usePathname();
   const [time, setTime] = useState<string | null>(null);
-  const listRef = useRef<HTMLUListElement>(null);
-  const [highlight, setHighlight] = useState<Highlight>({
-    left: 0,
-    top: 0,
-    width: 0,
-    height: 0,
-    visible: false,
-  });
-
-  function handleEnter(e: React.MouseEvent<HTMLAnchorElement>) {
-    const list = listRef.current;
-    if (!list) return;
-    const targetRect = e.currentTarget.getBoundingClientRect();
-    const listRect = list.getBoundingClientRect();
-    setHighlight({
-      left: targetRect.left - listRect.left,
-      top: targetRect.top - listRect.top,
-      width: targetRect.width,
-      height: targetRect.height,
-      visible: true,
-    });
-  }
-
-  function handleLeaveList() {
-    setHighlight((h) => ({ ...h, visible: false }));
-  }
+  const { listRef, style: highlightStyle, onEnter, onLeave } = useHoverHighlight();
 
   useEffect(() => {
     const update = () => setTime(formatReykjavik(new Date()));
@@ -67,9 +39,8 @@ export default function Navbar() {
       <nav className="flex h-12 w-full items-center gap-1.5 px-2.5 font-mono text-xs sm:gap-3 sm:px-6 sm:text-sm">
         {/* brand pill */}
         <Link
-          href="/admin"
-          onDoubleClick={() => router.push("/")}
-          aria-label="Admin Dashboard"
+          href="/"
+          aria-label="Home"
           className="flex shrink-0 items-center rounded p-1 sm:p-1.5 transition-all duration-100 ease-out hover:opacity-80 active:scale-95"
         >
           <RvLogo className="h-5 w-auto text-[#6A00FF] sm:h-6" mono mark />
@@ -81,17 +52,11 @@ export default function Navbar() {
         <ul
           ref={listRef}
           className="relative flex shrink-0 items-center gap-0.5 sm:gap-2"
-          onMouseLeave={handleLeaveList}
+          onMouseLeave={onLeave}
         >
           <div
             className="pointer-events-none absolute rounded bg-foreground/10 transition-all duration-150 ease-out"
-            style={{
-              left: highlight.left,
-              top: highlight.top,
-              width: highlight.width,
-              height: highlight.height,
-              opacity: highlight.visible ? 1 : 0,
-            }}
+            style={highlightStyle}
             aria-hidden
           />
           {NAV_ITEMS.map((item) => {
@@ -102,7 +67,7 @@ export default function Navbar() {
                   href={item.href}
                   prefetch={true}
                   aria-current={active ? "page" : undefined}
-                  onMouseEnter={handleEnter}
+                  onMouseEnter={onEnter}
                   className={`relative z-10 flex flex-row flex-nowrap items-center whitespace-nowrap shrink-0 rounded px-1.5 py-1 text-xs transition-all duration-100 ease-out active:scale-95 sm:px-2 sm:text-sm ${
                     active
                       ? "bg-[#6A00FF] font-medium text-white shadow-xs"

@@ -16,7 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Afrel Zharif Muflih (RVYK) | Web Developer & Cybersecurity Enthusiast",
+  metadataBase: new URL("https://rvyk.dev"),
+  title: { default: "RVYK", template: "%s · RVYK" },
   description:
     "Afrel Zharif Muflih, known as RVYK, is a web developer and cybersecurity enthusiast who builds thoughtful digital experiences and explores the security of technology.",
   keywords: [
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Afrel Zharif Muflih" }],
   openGraph: {
-    title: "Afrel Zharif Muflih (RVYK)",
+    title: "RVYK",
     description:
       "Web developer and cybersecurity enthusiast building thoughtful digital experiences.",
     type: "website",
@@ -45,7 +46,16 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        {/* Before first paint: apply saved theme, and hide the intro overlay if it already played this session. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var d=document.documentElement;localStorage.getItem("rv-theme")==="light"&&d.setAttribute("data-theme","light");sessionStorage.getItem("rvyk_intro_played")&&d.setAttribute("data-intro-played","")}catch(e){}`,
+          }}
+        />
+      </head>
       <body className="h-full flex flex-col overflow-hidden">
         <LoadingScreen />
         <Navbar />

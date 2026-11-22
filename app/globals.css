@@ -39,6 +39,22 @@ body {
   background-size: 48px 48px;
 }
 
+/* Intro overlay: hidden when already played; fades out on its own if JS never runs. */
+[data-intro-played] .intro-overlay {
+  display: none;
+}
+
+.intro-overlay {
+  animation: intro-failsafe 700ms ease-in-out 6s forwards;
+}
+
+@keyframes intro-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 /* View Transitions circular radiating effect - GPU accelerated */
 [data-switching] *,
 [data-switching] *::before,

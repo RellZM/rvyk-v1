@@ -1,4 +1,5 @@
 import React from "react";
+import Lanyard from "@/components/lanyard/Lanyard";
 import {
   siTypescript,
   siJavascript,
@@ -14,6 +15,8 @@ import {
   type SimpleIcon as SimpleIconType,
 } from "simple-icons";
 
+export const metadata = { title: "about" };
+
 const CONTACTS = [
   {
     label: "Email",
@@ -24,6 +27,11 @@ const CONTACTS = [
     label: "Github",
     value: "@RellZM",
     href: "https://github.com/RellZM",
+  },
+  {
+    label: "LinkedIn",
+    value: "Afrel Zharif Muflih",
+    href: "https://www.linkedin.com/in/afrel-zharif-muflih/",
   },
 ];
 
@@ -129,9 +137,22 @@ function TechBadge({ tech }: { tech: TechItem }) {
 
 export default function AboutPage() {
   return (
-    <section className="flex-1 overflow-y-auto bg-background px-6 py-6 sm:py-16 sm:px-10">
+    <section className="relative flex-1 overflow-y-auto bg-background px-6 py-6 sm:py-16 sm:px-10">
       <div className="mx-auto max-w-3xl">
-        <div className="flex flex-col-reverse gap-10 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+        {/* Mobile: in flow above the text. sm+: fills the section so the card swings freely (no box edge); only the card itself takes the mouse. */}
+        <div className="relative z-10 -mx-6 h-[440px] sm:pointer-events-none sm:absolute sm:inset-0 sm:mx-0 sm:h-auto">
+          <Lanyard
+            frontImage="/about/card-front.jpg"
+            backImage="/about/card-back.png"
+            cardColor="#ffffff"
+            anchor={0.92}
+            size={0.4}
+            strapLength={0.4}
+            passThrough
+          />
+        </div>
+
+        <div>
           <div className="min-w-0">
             <h1 className="text-5xl font-extrabold tracking-tight text-foreground sm:text-6xl">
               about
@@ -165,17 +186,6 @@ export default function AboutPage() {
             </div>
           </div>
 
-          <div className="flex shrink-0 flex-col items-center gap-3">
-            <div
-              className="h-32 w-32 shrink-0 rounded-full bg-foreground/10 bg-cover bg-center ring-1 ring-foreground/15 sm:h-36 sm:w-36"
-              style={{ backgroundImage: "url(/about/photo.png)" }}
-              role="img"
-              aria-label="Photo"
-            />
-            <span className="font-mono text-xs text-foreground/40">
-              rvyk · 01
-            </span>
-          </div>
         </div>
 
         {/* Facts */}

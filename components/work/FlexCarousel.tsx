@@ -4,9 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Renderer, Program, Mesh, Triangle, Plane, Texture, RenderTarget } from 'ogl';
 
-type BendPreset = 'liquid' | 'ribbon' | 'vortex' | 'arch';
+type BendPreset = 'liquid';
 type CurlMode = 'twist' | 'rise' | 'fall';
-type CarouselIntro = 'rise' | 'bloom' | 'spin' | 'deal' | 'none';
 type CardFit = 'natural' | 'portrait' | 'square' | 'landscape';
 
 export interface FlexCarouselItem {
@@ -14,6 +13,7 @@ export interface FlexCarouselItem {
   alt?: string;
   title?: string;
   subtitle?: string;
+  description?: string;
   href?: string;
   linkLabel?: string;
   alignX?: number;
@@ -36,33 +36,25 @@ interface PresetValues {
 export interface FlexCarouselProps extends Partial<PresetValues> {
   items?: FlexCarouselItem[];
   preset?: BendPreset;
-  intro?: CarouselIntro;
   cardHeight?: number;
   gap?: number;
   radius?: number;
   fit?: CardFit;
   squeeze?: number;
   focusOnClick?: boolean;
-  autoplay?: boolean;
-  interval?: number;
   captions?: boolean;
   captureWheel?: boolean;
-  onChange?: (index: number, item: FlexCarouselItem) => void;
-  onSelect?: (index: number, item: FlexCarouselItem) => void;
   className?: string;
   style?: CSSProperties;
 }
 
 interface Settings extends PresetValues {
-  intro: CarouselIntro;
   cardHeight: number;
   gap: number;
   radius: number;
   fit: CardFit;
   squeeze: number;
   focusOnClick: boolean;
-  autoplay: boolean;
-  interval: number;
   captureWheel: boolean;
 }
 
@@ -95,19 +87,6 @@ interface Instance {
   y1: number;
 }
 
-interface CardEffect {
-  alpha: number;
-  x: number;
-  y: number;
-  scale: number;
-}
-
-interface IntroEffects {
-  sceneAlpha: number;
-  strength: number;
-  card: ((rel: number) => CardEffect) | null;
-}
-
 interface Draw {
   i: number;
   rel: number;
@@ -123,48 +102,6 @@ interface Engine {
   setItems: (items: FlexCarouselItem[]) => void;
 }
 
-interface Callbacks {
-  onChange?: (index: number, item: FlexCarouselItem) => void;
-  onSelect?: (index: number, item: FlexCarouselItem) => void;
-}
-
-const photo = (id: string) => `https://images.unsplash.com/${id}?w=1200&q=80&auto=format&fit=max`;
-
-const DEFAULT_ITEMS: FlexCarouselItem[] = [
-  {
-    src: photo('photo-1737071371043-761e02b1ef95'),
-    alt: 'An iridescent chrome sculpture of a head',
-    title: 'Iridescence'
-  },
-  {
-    src: photo('photo-1693645325828-62cd35c8da8f'),
-    alt: 'A person in dark clothes standing in front of a white backdrop',
-    title: 'White Room'
-  },
-  { src: photo('photo-1739056238917-d89cd05c48d5'), alt: 'A twisted chrome form on black', title: 'Liquid Metal' },
-  { src: photo('photo-1747191092806-c7da11881986'), alt: 'A clay bust shown in profile', title: 'Clay Study' },
-  { src: photo('photo-1605034313761-73ea4a0cfbf3'), alt: 'Black and white low top sneakers', title: 'Low Tops' },
-  { src: photo('photo-1495462911434-be47104d70fa'), alt: 'A woman in a wide black hat', title: 'Brim' },
-  {
-    src: photo('photo-1786835568925-20cd20007ed0'),
-    alt: 'Three swirling shapes in white, gold and silver on grey',
-    title: 'Three Forms'
-  },
-  { src: photo('photo-1770249196550-ff6c641165cb'), alt: 'A chrome humanoid sculpture', title: 'Automaton' },
-  {
-    src: photo('photo-1787181875088-087d612262a7'),
-    alt: 'A black textured sculpture with an opening at its center',
-    title: 'Obsidian'
-  },
-  {
-    src: photo('photo-1770062422885-2dfcbe8fb65b'),
-    alt: 'A woman in a white shirt crouching on a dark set',
-    title: 'Poise'
-  },
-  { src: photo('photo-1726910133626-9b573eca70ff'), alt: 'Black curved shapes stacked like a fan', title: 'Fins' },
-  { src: photo('photo-1604854574958-59047362c165'), alt: 'A white plaster bust on a black table', title: 'Plaster' }
-];
-
 const BEND_PRESETS: Record<BendPreset, PresetValues> = {
   liquid: {
     lensWidth: 0.74,
@@ -175,42 +112,6 @@ const BEND_PRESETS: Record<BendPreset, PresetValues> = {
     reach: 0.38,
     curl: 'twist',
     dispersion: 0.45,
-    liquid: 0,
-    followCursor: false
-  },
-  ribbon: {
-    lensWidth: 0.8,
-    lensHeight: 0.8,
-    tilt: 0,
-    roundness: 1,
-    bend: 0.34,
-    reach: 0.34,
-    curl: 'twist',
-    dispersion: 0.4,
-    liquid: 0,
-    followCursor: false
-  },
-  vortex: {
-    lensWidth: 0.7,
-    lensHeight: 0.95,
-    tilt: 30,
-    roundness: 1,
-    bend: 0.46,
-    reach: 0.3,
-    curl: 'twist',
-    dispersion: 0.5,
-    liquid: 0,
-    followCursor: false
-  },
-  arch: {
-    lensWidth: 0.8,
-    lensHeight: 0.8,
-    tilt: 0,
-    roundness: 1,
-    bend: 0.3,
-    reach: 0.36,
-    curl: 'rise',
-    dispersion: 0.4,
     liquid: 0,
     followCursor: false
   }
@@ -224,12 +125,9 @@ const STYLE = `
 const FIT_ASPECT: Record<string, number> = { portrait: 0.75, square: 1, landscape: 1.45 };
 const TAPS = 12;
 const PIXEL_BUDGET = 4.5e6;
-const INTRO_DURATION: Record<string, number> = { rise: 2.1, bloom: 1.6, spin: 2.2, deal: 1.5, fade: 0.35 };
 
 const wrap = (value: number, size: number) => ((((value + size / 2) % size) + size) % size) - size / 2;
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
-const easeOut = (value: number) => 1 - Math.pow(1 - clamp01(value), 3);
-const easeOutQuint = (value: number) => 1 - Math.pow(1 - clamp01(value), 5);
 const easeInOut = (value: number) => {
   const t = clamp01(value);
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -394,9 +292,8 @@ const Digits = ({ value }: { value: number }) => (
 );
 
 const FlexCarousel = ({
-  items = DEFAULT_ITEMS,
+  items = [],
   preset = 'liquid',
-  intro = 'rise',
   cardHeight = 0.5,
   gap = 12,
   radius = 0,
@@ -413,12 +310,8 @@ const FlexCarousel = ({
   followCursor,
   squeeze = 0.2,
   focusOnClick = true,
-  autoplay = false,
-  interval = 4,
   captions = true,
   captureWheel = true,
-  onChange,
-  onSelect,
   className = '',
   style
 }: FlexCarouselProps) => {
@@ -426,23 +319,19 @@ const FlexCarousel = ({
   const settingsRef = useRef<Settings | null>(null);
   const itemsRef = useRef<FlexCarouselItem[]>(items);
   const engineRef = useRef<Engine | null>(null);
-  const callbacksRef = useRef<Callbacks>({ onChange, onSelect });
   const [active, setActive] = useState(0);
-  const [revealed, setRevealed] = useState(intro === 'none');
   const [focusOpen, setFocusOpen] = useState(false);
 
   const base = BEND_PRESETS[preset] || BEND_PRESETS.liquid;
   const pick = <K extends keyof PresetValues>(value: PresetValues[K] | undefined, key: K): PresetValues[K] =>
     value === undefined || value === null ? base[key] : value;
 
-  const list = items && items.length ? items : DEFAULT_ITEMS;
+  const list = items;
   const itemsKey = list.map(item => item.src).join('|');
 
   useEffect(() => {
     itemsRef.current = list;
-    callbacksRef.current = { onChange, onSelect };
     settingsRef.current = {
-      intro,
       cardHeight,
       gap,
       radius,
@@ -459,8 +348,6 @@ const FlexCarousel = ({
       followCursor: pick(followCursor, 'followCursor'),
       squeeze,
       focusOnClick,
-      autoplay,
-      interval,
       captureWheel
     };
     engineRef.current?.wake();
@@ -541,7 +428,7 @@ const FlexCarousel = ({
       uCurl: { value: 0 },
       uDispersion: { value: 0 },
       uStrength: { value: 0 },
-      uSceneAlpha: { value: 0 }
+      uSceneAlpha: { value: 1 }
     };
     const lensMesh = new Mesh(gl, {
       geometry: new Triangle(gl),
@@ -571,9 +458,6 @@ const FlexCarousel = ({
     let alive = true;
     let dirty = true;
     let activeIndex = -1;
-    let interactedAt = -Infinity;
-    let autoplayAt = performance.now();
-    let hasFocus = false;
     let deform = 0;
     let deformVel = 0;
     let layout: Metrics | null = null;
@@ -596,7 +480,6 @@ const FlexCarousel = ({
       touch: false,
       samples: [] as { x: number; t: number }[]
     };
-    const introState = { kind: 'none', t: 0, running: false, done: intro === 'none', readyAt: 0 };
     const focus = { index: -1, pending: -1, t: 0, v: 0, target: 0 };
     let instances: Instance[] = [];
 
@@ -677,7 +560,6 @@ const FlexCarousel = ({
       focus.v = 0;
       focus.pending = -1;
       setFocusOpen(false);
-      introState.readyAt = performance.now();
       dirty = true;
       start();
     };
@@ -779,71 +661,6 @@ const FlexCarousel = ({
       return true;
     };
 
-    const skipIntro = () => {
-      if (introState.running) introState.t = 1;
-    };
-
-    const introEffects = () => {
-      const t = introState.running ? introState.t : introState.done ? 1 : 0;
-      const e: IntroEffects = { sceneAlpha: 1, strength: 1, card: null };
-      if (!introState.done && !introState.running) {
-        e.sceneAlpha = 0;
-        e.strength = 0;
-        return e;
-      }
-      if (t >= 1) return e;
-      const kind = introState.kind;
-      if (kind === 'rise') {
-        e.strength = easeInOut((t - 0.3) / 0.65);
-        e.card = rel => {
-          const delay = Math.min(Math.abs(rel) / (width * 0.6), 1) * 0.34;
-          const local = clamp01((t - delay) / 0.6);
-          return {
-            alpha: clamp01(local * 4),
-            x: 0,
-            y: (1 - easeOutQuint(local)) * height * 0.62,
-            scale: 0.5 + 0.5 * easeInOut((local - 0.18) / 0.82)
-          };
-        };
-      } else if (kind === 'bloom') {
-        e.strength = easeInOut((t - 0.2) / 0.8);
-        e.card = rel => {
-          const delay = Math.min(Math.abs(rel) / (width * 0.6), 1) * 0.25;
-          const local = easeOut((t - delay) / 0.55);
-          return { alpha: local, x: 0, y: 0, scale: 0.92 + 0.08 * local };
-        };
-      } else if (kind === 'spin') {
-        e.sceneAlpha = easeOut(t / 0.25);
-        e.strength = easeOut((t - 0.55) / 0.45);
-      } else if (kind === 'deal') {
-        e.strength = easeOut((t - 0.45) / 0.5);
-        e.card = rel => {
-          const spread = Math.min(Math.abs(rel) / (width * 0.6), 1) * 0.3;
-          const local = easeOut((t - 0.12 - spread) / 0.5);
-          return { alpha: easeOut((t - spread) / 0.12), x: -rel * (1 - local), y: 0, scale: 1 };
-        };
-      } else {
-        e.sceneAlpha = easeOut(t);
-        e.strength = easeOut(t);
-      }
-      return e;
-    };
-
-    const beginIntro = (s: Settings, m: Metrics) => {
-      const kind = reducedMotion && s.intro !== 'none' ? 'fade' : s.intro;
-      introState.kind = INTRO_DURATION[kind] ? kind : 'none';
-      introState.running = introState.kind !== 'none';
-      introState.done = !introState.running;
-      introState.t = 0;
-      if (introState.done) setRevealed(true);
-      if (introState.kind === 'spin') {
-        const distance = m.loop * 1.6 + width;
-        pos = goal + distance;
-        vel = -distance * 3;
-        mode = 'spring';
-      }
-    };
-
     const resize = () => {
       width = Math.max(1, container.clientWidth);
       height = Math.max(1, container.clientHeight);
@@ -883,36 +700,12 @@ const FlexCarousel = ({
       }
       layout = m;
 
-      if (!introState.running && !introState.done) {
-        if (s.intro === 'none') {
-          introState.done = true;
-          setRevealed(true);
-        } else {
-          const allSettled = slots.every(slot => slot.loaded || slot.failed);
-          if (allSettled || now - introState.readyAt > 3500) {
-            goal = snapPoint(m, goal);
-            pos = goal;
-            beginIntro(s, m);
-          }
-        }
-      }
-      if (introState.running) {
-        introState.t = Math.min(1, introState.t + dt / (INTRO_DURATION[introState.kind] || 1));
-        if (introState.t >= 1) {
-          introState.running = false;
-          introState.done = true;
-          setRevealed(true);
-        }
-        animating = true;
-      }
-
       if (mode === 'wheel' && now - wheelAt > 150) {
         goal = snapPoint(m, goal);
         mode = 'spring';
       }
       if (!pointer.dragging) {
-        const spinning = introState.running && introState.kind === 'spin';
-        const stiffness = spinning ? 9 : mode === 'wheel' ? 80 : 55;
+        const stiffness = mode === 'wheel' ? 80 : 55;
         const damping = 2 * Math.sqrt(stiffness);
         const steps = Math.ceil(dt / (1 / 240));
         const h = dt / steps;
@@ -942,7 +735,6 @@ const FlexCarousel = ({
       if (current !== activeIndex) {
         activeIndex = current;
         setActive(current);
-        callbacksRef.current.onChange?.(current, itemsRef.current[current]);
       }
 
       if (focus.pending >= 0 && mode === 'spring' && Math.abs(goal - pos) < 1.5 && Math.abs(vel) < 30) {
@@ -950,24 +742,6 @@ const FlexCarousel = ({
         else focus.pending = -1;
       }
 
-      if (
-        s.autoplay &&
-        !reducedMotion &&
-        introState.done &&
-        focus.target === 0 &&
-        focus.t < 0.01 &&
-        !pointer.over &&
-        !pointer.down &&
-        !hasFocus &&
-        mode === 'spring' &&
-        Math.abs(goal - pos) < 1 &&
-        now - interactedAt > 3000 &&
-        now - autoplayAt > s.interval * 1000
-      ) {
-        autoplayAt = now;
-        step(m, 1);
-      }
-      if (s.autoplay && !reducedMotion) animating = true;
 
       const travel = Math.abs(pos - lastPos) / dt;
       lastPos = pos;
@@ -1010,8 +784,6 @@ const FlexCarousel = ({
       container.style.setProperty('--flex-carousel-half', `${((m.cardH / height) * 50).toFixed(2)}%`);
       container.style.setProperty('--flex-carousel-center', `${centerPct}%`);
 
-      const effects = introEffects();
-
       const follow = s.followCursor && pointer.over && !pointer.dragging && !pointer.touch && focus.target === 0;
       const aimX = follow ? pointer.x : homeX;
       const aimY = follow ? pointer.y : homeY;
@@ -1045,7 +817,6 @@ const FlexCarousel = ({
         }
       }
 
-      const waiting = !introState.done;
       if (dirty || animating || pointer.dragging) {
         dirty = false;
         instances = [];
@@ -1061,10 +832,9 @@ const FlexCarousel = ({
           for (let k = -3; k <= 3; k++) {
             const rel = baseRel + k * m.loop;
             if (Math.abs(rel) - w / 2 > width + 40) continue;
-            const fx = effects.card ? effects.card(rel) : null;
-            let x = homeX + rel + (fx ? fx.x : 0);
-            let scale = shrink * (fx ? fx.scale : 1);
-            let alpha = fx ? fx.alpha : 1;
+            let x = homeX + rel;
+            let scale = shrink;
+            let alpha = 1;
             if (focusAmount > 0) {
               if (i === focus.index && Math.abs(rel) < w) {
                 scale *= 1 + (focusScale - 1) * focusEase;
@@ -1078,7 +848,7 @@ const FlexCarousel = ({
             }
             const cw = w * scale;
             if (alpha <= 0.001 || x + cw / 2 < -40 || x - cw / 2 > width + 40) continue;
-            draws.push({ i, rel, x, y: homeY + (fx ? fx.y : 0), cw, ch: cardH * scale, alpha });
+            draws.push({ i, rel, x, y: homeY, cw, ch: cardH * scale, alpha });
           }
         }
         draws.sort((a, b) => Math.abs(b.rel) - Math.abs(a.rel));
@@ -1129,13 +899,12 @@ const FlexCarousel = ({
         lensUniforms.uFlow.value = s.bend * (spanW + spanH) * 0.45;
         lensUniforms.uCurl.value = s.curl === 'rise' ? 1 : s.curl === 'fall' ? -1 : 0;
         lensUniforms.uDispersion.value = s.dispersion * 0.12 * (1 + Math.abs(deform) * liquidAmount * 1.2);
-        lensUniforms.uStrength.value = effects.strength * (1 - focusEase);
-        lensUniforms.uSceneAlpha.value = effects.sceneAlpha;
+        lensUniforms.uStrength.value = 1 - focusEase;
         renderer.render({ scene: lensMesh });
       }
 
       let nextHover = '';
-      if (pointer.over && !pointer.dragging && introState.done && s.focusOnClick) {
+      if (pointer.over && !pointer.dragging && s.focusOnClick) {
         const hit = instances.find(
           inst => pointer.x >= inst.x0 && pointer.x <= inst.x1 && pointer.y >= inst.y0 && pointer.y <= inst.y1
         );
@@ -1148,7 +917,7 @@ const FlexCarousel = ({
         else container.removeAttribute('data-hover');
       }
 
-      if (visible && (animating || waiting || dirty || pointer.down)) raf = requestAnimationFrame(frame);
+      if (visible && (animating || dirty || pointer.down)) raf = requestAnimationFrame(frame);
     };
 
     const start = () => {
@@ -1164,7 +933,6 @@ const FlexCarousel = ({
 
     const onPointerDown = (e: PointerEvent) => {
       if (e.button !== undefined && e.button > 0) return;
-      skipIntro();
       const [x, y] = localPoint(e);
       pointer.down = true;
       pointer.id = e.pointerId;
@@ -1176,7 +944,6 @@ const FlexCarousel = ({
       pointer.startPos = pos;
       pointer.dragging = false;
       pointer.samples = [{ x, t: performance.now() }];
-      interactedAt = performance.now();
       if (Math.abs(vel) > 40) {
         goal = pos;
         vel = 0;
@@ -1232,7 +999,6 @@ const FlexCarousel = ({
       const s = settingsRef.current;
       if (!s) return;
       const m = metrics(s);
-      interactedAt = performance.now();
       if (pointer.dragging) {
         pointer.dragging = false;
         const now = performance.now();
@@ -1255,7 +1021,6 @@ const FlexCarousel = ({
       const hit = instances.find(inst => x >= inst.x0 && x <= inst.x1 && y >= inst.y0 && y <= inst.y1);
       if (!hit) return;
       if (hit.index === activeIndex && Math.abs(goal - pos) < 2) {
-        callbacksRef.current.onSelect?.(hit.index, itemsRef.current[hit.index]);
         if (s.focusOnClick) openFocus(hit.index);
       } else {
         goal = pos + wrap(m.centers[hit.index] - pos, m.loop);
@@ -1295,8 +1060,6 @@ const FlexCarousel = ({
       const horizontal = Math.abs(dx) > Math.abs(dy);
       if (!horizontal && !s.captureWheel) return;
       e.preventDefault();
-      skipIntro();
-      interactedAt = performance.now();
       if (closeFocus()) return;
       const delta = Math.max(-120, Math.min(120, (horizontal ? dx : dy) * unit));
       goal += delta * 1.25;
@@ -1311,15 +1074,11 @@ const FlexCarousel = ({
       const m = metrics(s);
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         e.preventDefault();
-        skipIntro();
         closeFocus();
-        interactedAt = performance.now();
         step(m, 1);
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         e.preventDefault();
-        skipIntro();
         closeFocus();
-        interactedAt = performance.now();
         step(m, -1);
       } else if (e.key === 'Home') {
         e.preventDefault();
@@ -1334,17 +1093,10 @@ const FlexCarousel = ({
       } else if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         if (closeFocus() || activeIndex < 0) return;
-        callbacksRef.current.onSelect?.(activeIndex, itemsRef.current[activeIndex]);
         if (s.focusOnClick) openFocus(activeIndex);
       }
     };
 
-    const onFocus = () => {
-      hasFocus = true;
-    };
-    const onBlur = () => {
-      hasFocus = false;
-    };
     const onVisibility = () => {
       if (!document.hidden) start();
     };
@@ -1356,8 +1108,6 @@ const FlexCarousel = ({
     container.addEventListener('pointercancel', onPointerCancel);
     container.addEventListener('wheel', onWheel, { passive: false });
     container.addEventListener('keydown', onKeyDown);
-    container.addEventListener('focus', onFocus);
-    container.addEventListener('blur', onBlur);
     document.addEventListener('visibilitychange', onVisibility);
 
     const resizeObserver = new ResizeObserver(resize);
@@ -1393,8 +1143,6 @@ const FlexCarousel = ({
       container.removeEventListener('pointercancel', onPointerCancel);
       container.removeEventListener('wheel', onWheel);
       container.removeEventListener('keydown', onKeyDown);
-      container.removeEventListener('focus', onFocus);
-      container.removeEventListener('blur', onBlur);
       document.removeEventListener('visibilitychange', onVisibility);
       slots.forEach(slot => slot.dispose());
       slots = [];
@@ -1417,7 +1165,7 @@ const FlexCarousel = ({
       tabIndex={0}
     >
       <style>{STYLE}</style>
-      {captions && current && revealed && (
+      {captions && current && (
         <div
           className="pointer-events-none absolute inset-x-0 top-[calc(var(--flex-carousel-center,50%)_+_var(--flex-carousel-half)_*_var(--flex-carousel-lift,1)_+_52px)] sm:top-[calc(var(--flex-carousel-center,50%)_+_var(--flex-carousel-half)_*_var(--flex-carousel-lift,1)_+_24px)] flex flex-col items-center gap-2 px-4 text-center animate-[flex-carousel-reveal_900ms_ease_both] motion-reduce:animate-none"
           aria-hidden="true"
@@ -1429,6 +1177,14 @@ const FlexCarousel = ({
             {current.title || current.alt}
             {current.subtitle && <span className="font-normal opacity-60">{current.subtitle}</span>}
           </span>
+          {current.description && (
+            <p
+              key={`d${active}`}
+              className="max-w-md text-[13px] leading-snug opacity-70 animate-[flex-carousel-title_520ms_cubic-bezier(0.22,1,0.36,1)] motion-reduce:animate-none"
+            >
+              {current.description}
+            </p>
+          )}
           {current.href && (
             <a
               href={current.href}

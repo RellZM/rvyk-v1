@@ -9,9 +9,9 @@ const EYES_CLOSED_SRC = "/mascot/eyes-closed.svg";
 const EYES_HOVER_SRC = "/mascot/eyes-hover.svg";
 const EYES_ACTIVE_SRC = "/mascot/eyes-active.svg";
 
-// Mascot baru (GIF) untuk PC / Desktop
-const GIF_INACTIVE_SRC = "/mascot_new/Inactive(1).gif";
-const GIF_ACTIVE_SRC = "/mascot_new/Speaking(1).gif";
+// Animated mascot for desktop
+const GIF_INACTIVE_SRC = "/mascot_new/inactive.webp";
+const GIF_ACTIVE_SRC = "/mascot_new/speaking.webp";
 
 const BLINK_CLOSED_MS = 140;
 const BLINK_MIN_OPEN_MS = 2200;
@@ -55,7 +55,9 @@ export default function Mascot() {
   const hasGreeted = useRef(false);
   const bubbleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Blink only matters for the mobile SVG face; the desktop GIF animates itself.
   useEffect(() => {
+    if (isDesktop) return;
     let timeout: ReturnType<typeof setTimeout>;
 
     const scheduleBlink = () => {
@@ -70,7 +72,10 @@ export default function Mascot() {
     };
 
     scheduleBlink();
+    return () => clearTimeout(timeout);
+  }, [isDesktop]);
 
+  useEffect(() => {
     const handleResize = () => {
       const desktop = window.innerWidth >= 1024;
       setIsDesktop(desktop);
@@ -84,7 +89,6 @@ export default function Mascot() {
     window.addEventListener("resize", handleResize);
 
     return () => {
-      clearTimeout(timeout);
       if (bubbleTimer.current) clearTimeout(bubbleTimer.current);
       window.removeEventListener("resize", handleResize);
     };
@@ -164,7 +168,7 @@ export default function Mascot() {
       onPointerEnter={handleHoverEnter}
       onPointerLeave={handleHoverLeave}
       role="img"
-      aria-label="Maskot"
+      aria-label="RVYK mascot"
       className="relative h-[clamp(10rem,26vh,16rem)] w-[clamp(10rem,26vh,16rem)] sm:h-[clamp(13rem,30vh,18rem)] sm:w-[clamp(13rem,30vh,18rem)] lg:h-[min(72vh,38vw,560px)] lg:w-[min(72vh,38vw,560px)] cursor-grab touch-none select-none active:cursor-grabbing lg:cursor-default lg:touch-auto lg:!transform-none"
       style={{
         transform: isDesktop ? "none" : `translate3d(${pos.x}px, ${pos.y}px, 0)`,
@@ -184,11 +188,12 @@ export default function Mascot() {
         />
       </div>
 
-      {/* PC / Desktop: Mascot GIF Baru */}
+      {/* Both variants stay in the DOM; CSS picks one, and loading="lazy" keeps the hidden one from downloading. */}
       <div className="relative hidden h-full w-full lg:block">
         <img
           src={GIF_INACTIVE_SRC}
-          alt="Maskot Inactive"
+          alt=""
+          loading="lazy"
           draggable={false}
           className={`absolute inset-0 h-full w-full object-contain object-bottom ${
             hovering ? "opacity-0" : "opacity-100"
@@ -196,20 +201,20 @@ export default function Mascot() {
         />
         <img
           src={GIF_ACTIVE_SRC}
-          alt="Maskot Active"
+          alt=""
+          loading="lazy"
           draggable={false}
           className={`absolute inset-0 h-full w-full object-contain object-bottom ${
             hovering ? "opacity-100" : "opacity-0"
           }`}
         />
       </div>
-
-      {/* Mobile: Mascot Lama (SVG Base + Eyes) */}
       <div className="relative block h-full w-full lg:hidden">
-        <img src={HEAD_SRC} alt="" draggable={false} className="absolute inset-0 h-full w-full" />
+        <img src={HEAD_SRC} alt="" loading="lazy" draggable={false} className="absolute inset-0 h-full w-full" />
         <img
           src={EYES_SRC[expression]}
           alt=""
+          loading="lazy"
           draggable={false}
           className="absolute inset-0 h-full w-full"
         />

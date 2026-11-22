@@ -4,12 +4,7 @@ import { useState, useEffect } from "react";
 import FlexCarousel, { FlexCarouselItem } from "@/components/work/FlexCarousel";
 
 
-export default function WorkClient({
-  initialItems,
-}: {
-  initialItems: FlexCarouselItem[];
-}) {
-  const [items] = useState<FlexCarouselItem[]>(initialItems);
+export default function WorkClient({ items }: { items: FlexCarouselItem[] }) {
   const [cardHeight, setCardHeight] = useState(0.5);
 
   useEffect(() => {
@@ -42,7 +37,6 @@ export default function WorkClient({
         <FlexCarousel
           items={items}
           preset="liquid"
-          intro="none"
           cardHeight={cardHeight}
           radius={14}
           fit="landscape"
