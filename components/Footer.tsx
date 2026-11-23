@@ -14,7 +14,9 @@ export default function Footer() {
   return (
     <footer className="w-full shrink-0 border-t border-foreground/10 bg-background/80 backdrop-blur-md">
       <div className="flex h-12 w-full flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 font-mono text-xs text-foreground/50 sm:px-6">
-        <span>© 2026 RVYK · Reykjavik</span>
+        <span>
+          © 2026 RVYK<span className="hidden sm:inline"> · Reykjavik</span>
+        </span>
         <ul
           ref={listRef}
           className="relative flex items-center gap-1 sm:gap-2"

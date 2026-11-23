@@ -778,7 +778,7 @@ const FlexCarousel = ({
       const isMobile = width < 640;
       const homeX = width / 2;
       const homeY = isMobile
-        ? Math.max(m.cardH * 0.62, Math.min(height * 0.43, 290))
+        ? Math.max(m.cardH * 0.58, height * 0.32) // sit high so the caption below isn't clipped on short phones
         : height * 0.42;
       const centerPct = ((homeY / height) * 100).toFixed(2);
       container.style.setProperty('--flex-carousel-half', `${((m.cardH / height) * 50).toFixed(2)}%`);
@@ -1167,7 +1167,7 @@ const FlexCarousel = ({
       <style>{STYLE}</style>
       {captions && current && (
         <div
-          className="pointer-events-none absolute inset-x-0 top-[calc(var(--flex-carousel-center,50%)_+_var(--flex-carousel-half)_*_var(--flex-carousel-lift,1)_+_52px)] sm:top-[calc(var(--flex-carousel-center,50%)_+_var(--flex-carousel-half)_*_var(--flex-carousel-lift,1)_+_24px)] flex flex-col items-center gap-2 px-4 text-center animate-[flex-carousel-reveal_900ms_ease_both] motion-reduce:animate-none"
+          className="pointer-events-none absolute inset-x-0 top-[calc(var(--flex-carousel-center,50%)_+_var(--flex-carousel-half)_*_var(--flex-carousel-lift,1)_+_52px)] sm:top-[calc(var(--flex-carousel-center,50%)_+_var(--flex-carousel-half)_*_var(--flex-carousel-lift,1)_+_44px)] lg:top-[calc(var(--flex-carousel-center,50%)_+_var(--flex-carousel-half)_*_var(--flex-carousel-lift,1)_+_24px)] flex flex-col items-center gap-2 px-4 text-center animate-[flex-carousel-reveal_900ms_ease_both] motion-reduce:animate-none"
           aria-hidden="true"
         >
           <span

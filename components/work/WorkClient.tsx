@@ -24,16 +24,16 @@ export default function WorkClient({ items }: { items: FlexCarouselItem[] }) {
   }, []);
 
   return (
-    <section className="relative flex flex-1 flex-col items-center justify-between overflow-hidden bg-background">
+    <section className="relative flex flex-1 flex-col items-center justify-between overflow-y-auto overflow-x-hidden bg-background">
       {/* Top Header Bar */}
       <header className="relative z-10 w-full max-w-6xl px-4 pt-4 pb-2 sm:px-10 sm:pt-4 sm:pb-0">
-        <h1 className="text-6xl font-black tracking-tight text-foreground sm:text-6xl lg:text-7xl animate-[work-reveal_500ms_cubic-bezier(0.16,1,0.3,1)_both] motion-reduce:animate-none">
+        <h1 className="text-5xl font-black tracking-tight text-foreground sm:text-6xl lg:text-7xl animate-[work-reveal_500ms_cubic-bezier(0.16,1,0.3,1)_both] motion-reduce:animate-none">
           work<span className="inline-block text-[#6A00FF] animate-[dot-pop_400ms_cubic-bezier(0.34,1.56,0.64,1)_220ms_both] motion-reduce:animate-none">.</span>
         </h1>
       </header>
 
       {/* FlexCarousel Centerpiece */}
-      <div className="relative z-10 flex-1 w-full min-h-[320px] sm:min-h-[360px] flex items-center justify-center">
+      <div className="relative z-10 flex-1 w-full min-h-[440px] flex items-center justify-center">
         <FlexCarousel
           items={items}
           preset="liquid"

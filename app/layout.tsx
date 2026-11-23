@@ -34,7 +34,10 @@ export const metadata: Metadata = {
     description:
       "Web developer and cybersecurity enthusiast building thoughtful digital experiences.",
     type: "website",
+    url: "/",
+    siteName: "RVYK",
   },
+  twitter: { card: "summary_large_image", title: "RVYK" },
 };
 
 export default function RootLayout({

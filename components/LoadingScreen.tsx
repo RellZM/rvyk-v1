@@ -1,41 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-// Logo blocks in the 580x325 viewBox space (axis-aligned bounding boxes,
-// derived from the Figma SVG's rotated/flipped rects).
-type Block = { x: number; y: number; w: number; h: number; color: string; gray?: boolean; isR?: boolean };
-
-const VB_W = 580;
-const VB_H = 325;
-const CENTER_X = VB_W / 2;
-const CENTER_Y = VB_H / 2;
-
-const BLOCKS: Block[] = [
-  // R (blue) + its gray stem — build priority group
-  { x: 0, y: 3, w: 240, h: 40, color: "#1900A7", isR: true },
-  { x: 0, y: 121, w: 40, h: 204, color: "#858585", gray: true, isR: true },
-  { x: 0, y: 62, w: 40, h: 40, color: "#1900A7", isR: true },
-  { x: 200, y: 62, w: 40, h: 40, color: "#1900A7", isR: true },
-  { x: 120, y: 121, w: 120, h: 40, color: "#1900A7", isR: true },
-  { x: 120, y: 175, w: 40, h: 40, color: "#1900A7", isR: true },
-  { x: 160, y: 230, w: 40, h: 40, color: "#1900A7", isR: true },
-  { x: 200, y: 285, w: 40, h: 40, color: "#1900A7", isR: true },
-  // V (colored) + its gray stems
-  { x: 520, y: 173, w: 60, h: 40, color: "#994D0F" },
-  { x: 540.529, y: 0, w: 39.4707, h: 149.111, color: "#858585", gray: true },
-  { x: 440, y: 282, w: 60, h: 40, color: "#994D0F" },
-  { x: 480, y: 227, w: 60, h: 40, color: "#994D0F" },
-  { x: 360, y: 109, w: 60, h: 40, color: "#CFA901" },
-  { x: 380.454, y: 164.461, w: 39.4707, h: 160.076, color: "#858585", gray: true },
-  { x: 280, y: 0, w: 60, h: 40, color: "#A70000" },
-  { x: 320, y: 55, w: 60, h: 40, color: "#A74600" },
-];
+import { BLOCKS, VB_W, VB_H, type Block } from "@/components/logoBlocks";
 
 const TRANSLATE_MS = 550; // time to travel into position, still stretched
 const SCALE_MS = 240; // short, decisive snap back to normal size — starts only after landing
 const FIRM_EASE = "cubic-bezier(0.33, 1, 0.68, 1)"; // decisive deceleration, no bounce/overshoot
 const STRETCH_ALONG = 2.4; // elongation along travel direction only — the cross axis stays 1
+
+const CENTER_X = VB_W / 2;
+const CENTER_Y = VB_H / 2;
 
 // Build order: R's gray stem first, then the rest of R, then V's gray
 // stems, then the rest of V. Each stage is a delay window.

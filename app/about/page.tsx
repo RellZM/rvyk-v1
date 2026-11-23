@@ -119,15 +119,16 @@ function TechBadge({ tech }: { tech: TechItem }) {
     <div
       title={tech.name}
       aria-label={tech.name}
-      className="group flex h-14 w-14 sm:h-16 sm:w-16 items-center rounded-xl border border-foreground/10 bg-foreground/[0.02] text-foreground/75 overflow-hidden transition-all duration-300 ease-out hover:w-56 sm:hover:w-64 hover:border-[#6A00FF]/50 hover:bg-foreground/[0.05] hover:shadow-xs active:scale-95 cursor-pointer shrink-0">
-      <div className="flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center text-foreground/75 transition-colors duration-200 group-hover:text-[#6A00FF]">
+      className="group flex min-h-12 w-full sm:h-16 sm:w-16 items-center rounded-xl border border-foreground/10 bg-foreground/[0.02] text-foreground/75 overflow-hidden transition-all duration-300 ease-out sm:hover:w-64 hover:border-[#6A00FF]/50 hover:bg-foreground/[0.05] hover:shadow-xs active:scale-95 cursor-pointer shrink-0">
+      <div className="flex h-12 w-12 sm:h-16 sm:w-16 shrink-0 items-center justify-center text-foreground/75 transition-colors duration-200 group-hover:text-[#6A00FF]">
         <IconSvg icon={tech.icon} />
       </div>
-      <div className="flex flex-col justify-center min-w-0 pr-4 whitespace-nowrap overflow-hidden opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-hover:delay-100">
+      {/* Mobile has no hover: label always visible in a 2-col grid. sm+: icon tile that expands on hover. */}
+      <div className="flex flex-col justify-center min-w-0 py-1 pr-3 overflow-hidden sm:whitespace-nowrap sm:py-0 sm:pr-4 sm:opacity-0 sm:transition-opacity sm:duration-150 sm:group-hover:opacity-100 sm:group-hover:delay-100">
         <span className="text-xs sm:text-[13px] font-bold tracking-tight text-foreground truncate">
           {tech.name}
         </span>
-        <span className="text-[10px] sm:text-[11px] font-mono text-foreground/60 mt-0.5 truncate">
+        <span className="text-[10px] leading-tight sm:text-[11px] font-mono text-foreground/60 mt-0.5 sm:truncate">
           {tech.desc}
         </span>
       </div>
@@ -139,8 +140,8 @@ export default function AboutPage() {
   return (
     <section className="relative flex-1 overflow-y-auto bg-background px-6 py-6 sm:py-16 sm:px-10">
       <div className="mx-auto max-w-3xl">
-        {/* Mobile: in flow above the text. sm+: fills the section so the card swings freely (no box edge); only the card itself takes the mouse. */}
-        <div className="relative z-10 -mx-6 h-[440px] sm:pointer-events-none sm:absolute sm:inset-0 sm:mx-0 sm:h-auto">
+        {/* Mobile/tablet: in flow above the text. lg+: fills the section so the card swings freely (no box edge); only the card itself takes the mouse. */}
+        <div className="relative z-10 -mx-6 h-[380px] sm:-mx-10 xl:pointer-events-none xl:absolute xl:inset-0 xl:mx-0 xl:h-auto">
           <Lanyard
             frontImage="/about/card-front.jpg"
             backImage="/about/card-back.png"
@@ -163,7 +164,7 @@ export default function AboutPage() {
               — stargazing toward the end of voyages
             </p>
 
-            <div className="mt-8 max-w-xl space-y-5 text-justify text-[15px] leading-8 text-foreground/85">
+            <div className="mt-8 max-w-xl space-y-5 text-[15px] sm:text-justify leading-8 text-foreground/85">
               <p>
                 Yo, I&apos;m Rel or Rvyk, just your average student obsessed
                 with two things: building stuff for the web and hacking away at
@@ -208,7 +209,7 @@ export default function AboutPage() {
                 Reykjavik · UTC+0
               </div>
             </div>
-            <div className="text-right">
+            <div className="sm:text-right">
               <div className="font-mono text-xs uppercase tracking-widest text-foreground/40">
                 Languages
               </div>
@@ -233,7 +234,7 @@ export default function AboutPage() {
               <div className="mb-3 font-mono text-[11px] uppercase tracking-wider text-foreground/40">
                 Languages
               </div>
-              <div className="flex flex-wrap gap-2.5 sm:gap-3">
+              <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:gap-3">
                 {LANGUAGES.map((tech) => (
                   <TechBadge key={tech.name} tech={tech} />
                 ))}
@@ -244,7 +245,7 @@ export default function AboutPage() {
               <div className="mb-3 font-mono text-[11px] uppercase tracking-wider text-foreground/40">
                 Frameworks & Ecosystem
               </div>
-              <div className="flex flex-wrap gap-2.5 sm:gap-3">
+              <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:gap-3">
                 {FRAMEWORKS.map((tech) => (
                   <TechBadge key={tech.name} tech={tech} />
                 ))}
@@ -275,7 +276,7 @@ export default function AboutPage() {
                 <div className="font-mono text-xs uppercase tracking-widest text-foreground/40 sm:w-32">
                   {c.label}
                 </div>
-                <div className="flex-1 text-lg text-foreground">{c.value}</div>
+                <div className="min-w-0 flex-1 break-words text-base text-foreground sm:text-lg">{c.value}</div>
                 <span className="text-foreground/40 transition-colors duration-150 ease-out group-hover:text-foreground">
                   ↗
                 </span>

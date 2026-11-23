@@ -1,10 +1,14 @@
 import { ImageResponse } from "next/og";
+import { BLOCKS, VB_W, VB_H } from "@/components/logoBlocks";
 
-export const alt = "RVYK — Afrel Zharif Muflih, web developer and cybersecurity enthusiast";
+export const alt = "RVYK logo";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+const LOGO_W = 640; // logo width in the 1200x630 card
+
 export default function Image() {
+  const scale = LOGO_W / VB_W;
   return new ImageResponse(
     (
       <div
@@ -12,18 +16,25 @@ export default function Image() {
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
+          alignItems: "center",
           justifyContent: "center",
-          padding: "0 96px",
-          background: "#000000",
-          color: "#ffffff",
+          background: "#ffffff",
         }}
       >
-        <div style={{ display: "flex", fontSize: 180, fontWeight: 800, letterSpacing: -6 }}>
-          RVYK<span style={{ color: "#6A00FF" }}>.</span>
-        </div>
-        <div style={{ fontSize: 40, opacity: 0.7, marginTop: 8 }}>
-          Afrel Zharif Muflih · Web developer & cybersecurity enthusiast
+        <div style={{ position: "relative", display: "flex", width: LOGO_W, height: VB_H * scale }}>
+          {BLOCKS.map((b, i) => (
+            <div
+              key={i}
+              style={{
+                position: "absolute",
+                left: b.x * scale,
+                top: b.y * scale,
+                width: b.w * scale,
+                height: b.h * scale,
+                background: b.color,
+              }}
+            />
+          ))}
         </div>
       </div>
     ),

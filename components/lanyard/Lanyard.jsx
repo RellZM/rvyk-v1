@@ -932,8 +932,8 @@ const Lanyard = ({
       foilUniforms.foilKey.value.set(-2.5, 4, 6).normalize().transformDirection(camera.matrixWorldInverse);
       foilUniforms.foilFill.value.set(3, -1, 4).normalize().transformDirection(camera.matrixWorldInverse);
       foilUniforms.foilTop.value.set(0.5, 4.5, 8).normalize().transformDirection(camera.matrixWorldInverse);
-      // Narrow containers (phones) use mobileAnchor so the card can sit centered.
-      const anchorValue = view.width < 640 ? s.mobileAnchor : s.anchor;
+      // Containers narrower than xl (1280 viewport minus scrollbar) (phones, tablets) use mobileAnchor so the card can sit centered.
+      const anchorValue = view.width < 1200 ? s.mobileAnchor : s.anchor;
       const anchorX = ((ANCHORS[anchorValue] ?? (typeof anchorValue === 'number' ? anchorValue : 0.5)) - 0.5) * viewWidth;
       const anchorY = viewHeight / 2 + 0.2;
       const cardTop = viewHeight / 2 - viewHeight * mix(0.12, 0.42, clamp(s.strapLength, 0, 1));

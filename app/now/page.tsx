@@ -60,7 +60,7 @@ export default function NowPage() {
           >
             {/* dotted paper body */}
             <div
-              className="relative py-9 pl-12 pr-6 text-[15px] leading-9 sm:pl-14 sm:pr-8"
+              className="relative py-6 pl-6 pr-5 text-[15px] leading-8 sm:py-9 sm:pl-14 sm:pr-8 sm:leading-9"
               style={{
                 backgroundImage:
                   "radial-gradient(circle, var(--grid-line-soft) 1.2px, transparent 1.2px)",
@@ -75,7 +75,7 @@ export default function NowPage() {
 
               {/* intro paragraphs */}
               {entry.paragraphs.map((text, i) => (
-                <p key={i} className={`text-foreground/90 ${i > 0 ? "mt-9" : ""}`}>
+                <p key={i} className={`text-foreground/90 ${i > 0 ? "mt-6 sm:mt-9" : ""}`}>
                   {text}
                 </p>
               ))}
@@ -88,7 +88,7 @@ export default function NowPage() {
                 {entry.rows.map((row) => (
                   <div
                     key={row.label}
-                    className="flex flex-col sm:flex-row sm:items-baseline sm:gap-6"
+                    className="flex flex-col pb-3 sm:flex-row sm:items-baseline sm:gap-6 sm:pb-0"
                   >
                     <dt className="shrink-0 font-mono text-xs uppercase tracking-widest text-foreground/50 sm:w-36">
                       {row.label}

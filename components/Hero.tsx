@@ -2,7 +2,7 @@ import Mascot from "@/components/Mascot";
 
 export default function Hero() {
   return (
-    <section className="relative flex flex-1 flex-col overflow-hidden bg-background">
+    <section className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden bg-background">
       <div className="pointer-events-none absolute inset-0 bg-circuit opacity-[0.15]" aria-hidden />
 
       <div className="relative z-10 flex flex-1 flex-col items-start justify-start gap-8 pt-[144px] pb-6 px-6 sm:px-10 sm:justify-center sm:pt-10 sm:gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-8 lg:pt-0 lg:pb-0">
