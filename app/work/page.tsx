@@ -5,7 +5,7 @@ export const metadata = { title: "work" };
 
 const DEFAULT_WORK_ITEMS: FlexCarouselItem[] = [
   {
-    src: "/work/petrolida/petrolida-hero.webp",
+    src: "/work/petrolida/petrolida-card.webp",
     title: "Petrolida 2027",
     subtitle: "Frontend Developer · 2026",
     alt: "Petrolida 2027 Website",
