@@ -5,16 +5,6 @@ export const metadata = { title: "work" };
 
 const DEFAULT_WORK_ITEMS: FlexCarouselItem[] = [
   {
-    src: "/work/petrolida/petrolida-card-v2.webp",
-    title: "Petrolida 2027",
-    subtitle: "Frontend Developer · 2026",
-    alt: "Petrolida 2027 Website",
-    description:
-      "I built pages and integrated the API for Petrolida, a competition organized by SPE ITS.",
-    href: "https://petrolida.com/",
-    linkLabel: "Visit live site",
-  },
-  {
     src: "/work/ibl/ibl-hero.jpg",
     title: "ITS Basketball League",
     subtitle: "Frontend Developer · 2026",
