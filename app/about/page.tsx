@@ -144,7 +144,7 @@ export default function AboutPage() {
         <div className="relative z-10 -mx-6 h-[380px] sm:-mx-10 xl:pointer-events-none xl:absolute xl:inset-0 xl:mx-0 xl:h-auto">
           <Lanyard
             frontImage="/about/card-front.jpg"
-            backImage="/about/card-back.png"
+            backImage="/about/card-back-v2.png"
             cardColor="#ffffff"
             anchor={0.92}
             size={0.4}
